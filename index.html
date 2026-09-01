@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>موقعي 🚀</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #0b0b0b;
+            color: white;
+            transition: 0.4s;
+        }
+
+        /* ===== الشريط العلوي ===== */
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            padding: 18px 8%;
+
+            background: rgba(20, 20, 20, 0.95);
+
+            border-bottom: 1px solid #333;
+
+            backdrop-filter: blur(10px);
+        }
+
+        header h2 {
+            margin: 0;
+            color: gold;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+
+            margin: 0 12px;
+
+            font-size: 17px;
+
+            transition: 0.3s;
+        }
+
+        nav a:hover {
+            color: gold;
+        }
+
+        /* ===== زر الوضع الليلي والفاتح ===== */
+
+        .theme-button {
+            padding: 8px 12px;
+
+            margin-right: 10px;
+
+            border: 1px solid #555;
+            border-radius: 50%;
+
+            background: #222;
+            color: white;
+
+            font-size: 20px;
+
+            cursor: pointer;
+
+            transition: 0.3s;
+        }
+
+        .theme-button:hover {
+            transform: scale(1.1);
+        }
+
+        /* ===== الصفحة الرئيسية ===== */
+
+        .hero {
+            min-height: 90vh;
+
+            display: flex;
+            flex-direction: column;
+
+            justify-content: center;
+            align-items: center;
+
+            text-align: center;
+
+            padding: 30px 20px;
+
+            background:
+                radial-gradient(
+                    circle at center,
+                    #252000 0%,
+                    #0b0b0b 55%
+                );
+        }
+
+        .hero h1 {
+            font-size: 55px;
+
+            margin: 10px 0;
+
+            animation: appear 1s ease;
+        }
+
+        .hero h1 span {
+            color: gold;
+        }
+
+        .hero p {
+            font-size: 21px;
+
+            color: #ccc;
+
+            max-width: 650px;
+
+            line-height: 1.8;
+        }
+
+        /* ===== الأزرار ===== */
+
+        .main-button {
+            padding: 16px 35px;
+
+            margin-top: 20px;
+
+            border: none;
+            border-radius: 30px;
+
+            background: gold;
+            color: black;
+
+            font-size: 18px;
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.3s;
+        }
+
+        .main-button:hover {
+            transform: scale(1.08);
+
+            background: white;
+        }
+
+        /* ===== الأقسام ===== */
+
+        section {
+            padding: 90px 8%;
+
+            text-align: center;
+        }
+
+        section h2 {
+            font-size: 38px;
+
+            margin-bottom: 20px;
+        }
+
+        section h2 span {
+            color: gold;
+        }
+
+        /* ===== قسم من أنا ===== */
+
+        .about {
+            background: #151515;
+        }
+
+        .profile-image {
+            width: 180px;
+            height: 180px;
+
+            object-fit: cover;
+
+            border-radius: 50%;
+
+            border: 4px solid gold;
+
+            margin: 20px auto;
+
+            display: block;
+
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.3);
+        }
+
+        .about p {
+            max-width: 700px;
+
+            margin: auto;
+
+            color: #ccc;
+
+            font-size: 19px;
+
+            line-height: 2;
+        }
+
+        /* ===== الكروت ===== */
+
+        .cards {
+            display: flex;
+
+            justify-content: center;
+
+            flex-wrap: wrap;
+
+            gap: 25px;
+
+            margin-top: 40px;
+        }
+
+        .card {
+            width: 260px;
+
+            padding: 30px;
+
+            background: #181818;
+
+            border: 1px solid #333;
+
+            border-radius: 18px;
+
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+
+            border-color: gold;
+        }
+
+        .card .icon {
+            font-size: 45px;
+        }
+
+        .card h3 {
+            color: gold;
+
+            font-size: 23px;
+        }
+
+        .card p {
+            color: #bbb;
+
+            line-height: 1.7;
+        }
+
+        /* ===== التواصل ===== */
+
+        .contact {
+            background: #151515;
+        }
+
+        .contact input,
+        .contact textarea {
+
+            width: 90%;
+
+            max-width: 600px;
+
+            display: block;
+
+            margin: 15px auto;
+
+            padding: 15px;
+
+            background: #222;
+
+            color: white;
+
+            border: 1px solid #444;
+
+            border-radius: 10px;
+
+            font-size: 16px;
+        }
+
+        .contact textarea {
+            height: 130px;
+
+            resize: none;
+        }
+
+        /* ===== الفوتر ===== */
+
+        footer {
+            padding: 30px;
+
+            text-align: center;
+
+            background: #080808;
+
+            color: #888;
+        }
+
+        /* ===== الحركة ===== */
+
+        @keyframes appear {
+
+            from {
+                opacity: 0;
+
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+
+                transform: translateY(0);
+            }
+
+        }
+
+        /* =================================
+           الوضع الفاتح
+        ================================= */
+
+        body.light-mode {
+            background: #f5f5f5;
+
+            color: #111;
+        }
+
+        body.light-mode header {
+            background: rgba(255, 255, 255, 0.95);
+
+            border-bottom: 1px solid #ddd;
+        }
+
+        body.light-mode nav a {
+            color: #111;
+        }
+
+        body.light-mode nav a:hover {
+            color: #b8860b;
+        }
+
+        body.light-mode .hero {
+
+            background:
+                radial-gradient(
+                    circle at center,
+                    #fff8c7 0%,
+                    #f5f5f5 55%
+                );
+        }
+
+        body.light-mode .hero p {
+            color: #444;
+        }
+
+        body.light-mode .about,
+        body.light-mode .contact {
+            background: #e9e9e9;
+        }
+
+        body.light-mode .about p {
+            color: #444;
+        }
+
+        body.light-mode .card {
+            background: white;
+
+            border-color: #ddd;
+        }
+
+        body.light-mode .card p {
+            color: #444;
+        }
+
+        body.light-mode .theme-button {
+            background: #eee;
+
+            color: #111;
+
+            border-color: #ccc;
+        }
+
+        body.light-mode .contact input,
+        body.light-mode .contact textarea {
+
+            background: white;
+
+            color: #111;
+
+            border-color: #ccc;
+        }
+
+        body.light-mode footer {
+
+            background: #ddd;
+
+            color: #555;
+        }
+
+        /* ===== الموبايل ===== */
+
+        @media (max-width: 700px) {
+
+            header {
+                flex-direction: column;
+
+                gap: 15px;
+            }
+
+            nav {
+                flex-wrap: wrap;
+
+                justify-content: center;
+            }
+
+            nav a {
+                font-size: 14px;
+
+                margin: 5px;
+            }
+
+            .hero h1 {
+                font-size: 38px;
+            }
+
+            .hero p {
+                font-size: 17px;
+            }
+
+            .profile-image {
+                width: 150px;
+                height: 150px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- ===== الشريط العلوي ===== -->
+
+    <header>
+
+        <h2>موقعي 🚀</h2>
+
+        <nav>
+
+            <a href="#home">الرئيسية</a>
+
+            <a href="#about">عني</a>
+
+            <a href="#services">الخدمات</a>
+
+            <a href="#contact">تواصل معي</a>
+
+            <!-- زر الوضع -->
+
+            <button
+                class="theme-button"
+                onclick="toggleTheme()">
+
+                🌙
+
+            </button>
+
+        </nav>
+
+    </header>
+
+
+    <!-- ===== الصفحة الرئيسية ===== -->
+
+    <section
+        class="hero"
+        id="home">
+
+        <h1>
+
+            أهلاً بيك في
+            <span>موقعي</span>
+
+        </h1>
+
+        <p>
+
+            ده أول موقع بعمله من الصفر،
+            ودي مجرد البداية 🚀
+
+        </p>
+
+        <button
+            class="main-button"
+            onclick="welcome()">
+
+            ابدأ الآن
+
+        </button>
+
+    </section>
+
+
+    <!-- ===== من أنا ===== -->
+
+    <section
+        class="about"
+        id="about">
+
+        <h2>
+
+            من
+            <span>أنا؟</span>
+
+        </h2>
+
+
+        <!-- صورتك الشخصية -->
+
+        <img
+            src="profile.jpg"
+            alt="صورتي الشخصية"
+            class="profile-image">
+
+
+        <p>
+
+            أهلاً بيك في موقعي.
+
+            أهلاً بيك في موقعي. انا moazwaleed المطور الرسمي للموقع ده اه يعتبر مش عامله كلوا علشان واخد مساعدة الذكاء الإصطناعي 
+
+            ولسه هنطوره مع بعض ونضيف له حاجات أكتر 🔥
+
+        </p>
+
+    </section>
+
+
+    <!-- ===== الخدمات ===== -->
+
+    <section
+        id="services">
+
+        <h2>
+
+            ماذا
+            <span>أقدم؟</span>
+
+        </h2>
+
+
+        <div class="cards">
+
+
+            <div class="card">
+
+                <div class="icon">
+                    💻
+                </div>
+
+                <h3>
+                    تصميم مواقع
+                </h3>
+
+                <p>
+
+                    تصميم مواقع عصرية
+                    وسريعة ومتوافقة
+                    مع الموبايل والكمبيوتر.
+
+                </p>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="icon">
+                    🎨
+                </div>
+
+                <h3>
+                    تصميم واجهات
+                </h3>
+
+                <p>
+
+                    واجهات جميلة وبسيطة
+                    وسهلة الاستخدام.
+
+                </p>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="icon">
+                    🚀
+                </div>
+
+                <h3>
+                    تطوير المواقع
+                </h3>
+
+                <p>
+
+                    إضافة خصائص وحركات
+                    وتطوير الموقع باستمرار.
+
+                </p>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- ===== التواصل ===== -->
+
+    <section
+        class="contact"
+        id="contact">
+
+        <h2>
+
+            تواصل
+            <span>معي</span>
+
+        </h2>
+
+        <p>
+
+            اكتب رسالتك هنا 👇
+
+        </p>
+
+
+        <input
+            type="text"
+            placeholder="اسمك">
+
+
+        <input
+            type="email"
+            placeholder="رقم تليفونك">
+
+
+        <textarea
+            placeholder="اكتب رسالتك هنا..."></textarea>
+        <a
+    class="whatsapp-button"
+    href="https://wa.me/201098714097"
+    target="_blank">
+
+    <svg
+        class="whatsapp-icon"
+        viewBox="0 0 24 24"
+        fill="white">
+
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.372-.025-.521-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.67-.51-.173-.008-.372-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.626.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+
+        <path d="M20.52 3.449C18.24 1.16 15.208-.002 11.98 0 5.3 0 .03 5.266.027 11.944c-.001 2.096.547 4.142 1.588 5.946L0 24l6.204-1.59a11.88 11.88 0 0 0 5.77 1.47h.005c6.68 0 11.949-5.267 11.952-11.945.001-3.227-1.252-6.257-3.411-8.486zM11.98 21.884h-.004a9.92 9.92 0 0 1-5.057-1.385l-.363-.215-3.682.943.983-3.591-.236-.369a9.92 9.92 0 0 1-1.522-5.322C2.1 6.372 6.527 1.946 11.984 1.946c2.64 0 5.12 1.03 6.985 2.898a9.83 9.83 0 0 1 2.897 6.987c-.003 5.457-4.43 9.884-9.886 9.884z"/>
+
+    </svg>
+
+    تواصل معي على واتساب
+
+</a>
+
+        <button
+            class="main-button"
+            onclick="sendMessage()">
+
+            إرسال الرسالة
+
+        </button>
+
+    </section>
+
+
+    <!-- ===== أسفل الموقع ===== -->
+
+    <footer>
+
+        جميع الحقوق محفوظة © 2026
+
+    </footer>
+
+
+    <!-- ===== JavaScript ===== -->
+
+    <script>
+
+
+        /* زر ابدأ الآن */
+
+        function welcome() {
+
+            alert(
+                "أهلاً بيك ❤️🚀\nلسه البداية!"
+            );
+
+        }
+
+
+        /* زر إرسال الرسالة */
+
+        function sendMessage() {
+
+            alert(
+                "تم إرسال الرسالة بنجاح! ✅"
+            );
+
+        }
+
+
+        /* زر الوضع الليلي والفاتح */
+
+        function toggleTheme() {
+
+            document.body.classList.toggle(
+                "light-mode"
+            );
+
+
+            const button =
+                document.querySelector(
+                    ".theme-button"
+                );
+
+
+            if (
+                document.body.classList.contains(
+                    "light-mode"
+                )
+            ) {
+
+                button.textContent = "☀️";
+
+            } else {
+
+                button.textContent = "🌙";
+
+            }
+
+        }
+
+
+    </script>
+
+
+</body>
+
+</html>
