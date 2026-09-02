@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>التيار الكهربي ⚡</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #0b0b0b;
+            color: white;
+            line-height: 1.9;
+            transition: 0.4s;
+        }
+
+        /* ===== الهيدر ===== */
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+
+            padding: 18px 8%;
+
+            background: rgba(20, 20, 20, 0.95);
+
+            border-bottom: 1px solid #333;
+
+            text-align: center;
+
+            backdrop-filter: blur(10px);
+        }
+
+        header h1 {
+            margin: 0;
+            color: gold;
+            font-size: 28px;
+        }
+
+        /* ===== محتوى الدرس ===== */
+
+        .lesson {
+            max-width: 950px;
+            margin: auto;
+            padding: 50px 20px;
+        }
+
+        .title {
+            text-align: center;
+            margin-bottom: 45px;
+        }
+
+        .title h2 {
+            font-size: 45px;
+            margin: 0 0 10px;
+        }
+
+        .title h2 span {
+            color: gold;
+        }
+
+        .title p {
+            color: #aaa;
+            font-size: 19px;
+        }
+
+        /* ===== كروت الشرح ===== */
+
+        .card {
+            background: #181818;
+            border: 1px solid #333;
+            border-radius: 18px;
+
+            padding: 30px;
+
+            margin-bottom: 25px;
+
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            border-color: gold;
+            transform: translateY(-3px);
+        }
+
+        .card h3 {
+            color: gold;
+            font-size: 26px;
+            margin-top: 0;
+        }
+
+        .card p {
+            color: #ddd;
+            font-size: 18px;
+        }
+
+        /* ===== النقاط ===== */
+
+        .points {
+            padding: 0;
+            list-style: none;
+        }
+
+        .points li {
+            background: #111;
+            border-right: 4px solid gold;
+
+            padding: 12px 18px;
+
+            margin: 12px 0;
+
+            border-radius: 8px;
+
+            color: #ddd;
+        }
+
+        /* ===== القوانين ===== */
+
+        .formula {
+            text-align: center;
+
+            background: #101010;
+
+            border: 1px solid gold;
+
+            border-radius: 15px;
+
+            padding: 22px;
+
+            margin: 20px 0;
+        }
+
+        .formula .equation {
+            color: gold;
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .formula small {
+            display: block;
+            color: #aaa;
+            margin-top: 8px;
+        }
+
+        /* ===== مثال ===== */
+
+        .example {
+            background: #101010;
+
+            border-right: 5px solid gold;
+
+            padding: 22px;
+
+            margin-top: 20px;
+
+            border-radius: 10px;
+        }
+
+        .example h4 {
+            color: gold;
+            margin-top: 0;
+            font-size: 21px;
+        }
+
+        .answer {
+            color: gold;
+            font-weight: bold;
+            font-size: 22px;
+        }
+
+        /* ===== تنبيه ===== */
+
+        .note {
+            background: #241f00;
+
+            border: 1px solid #665900;
+
+            border-radius: 15px;
+
+            padding: 20px;
+
+            margin-top: 20px;
+        }
+
+        .note strong {
+            color: gold;
+        }
+
+        /* ===== جدول ===== */
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            padding: 14px;
+            border: 1px solid #444;
+            text-align: center;
+        }
+
+        th {
+            background: #252000;
+            color: gold;
+        }
+
+        td {
+            color: #ddd;
+        }
+
+        /* ===== زر الرجوع ===== */
+
+        .back-button {
+            display: block;
+
+            width: fit-content;
+
+            margin: 45px auto 10px;
+
+            padding: 14px 30px;
+
+            background: gold;
+
+            color: black;
+
+            text-decoration: none;
+
+            font-weight: bold;
+
+            border-radius: 30px;
+
+            transition: 0.3s;
+        }
+
+        .back-button:hover {
+            background: white;
+            transform: scale(1.05);
+        }
+
+        /* ===== الوضع الفاتح ===== */
+
+        body.light-mode {
+            background: #f5f5f5;
+            color: #111;
+        }
+
+        body.light-mode header {
+            background: rgba(255, 255, 255, 0.95);
+            border-color: #ddd;
+        }
+
+        body.light-mode .card {
+            background: white;
+            border-color: #ddd;
+        }
+
+        body.light-mode .card p,
+        body.light-mode .points li,
+        body.light-mode td {
+            color: #333;
+        }
+
+        body.light-mode .points li {
+            background: #f2f2f2;
+        }
+
+        body.light-mode .formula,
+        body.light-mode .example {
+            background: #eeeeee;
+        }
+
+        body.light-mode .note {
+            background: #fff8c7;
+            border-color: #d5bd45;
+        }
+
+        /* ===== الموبايل ===== */
+
+        @media (max-width: 700px) {
+
+            .lesson {
+                padding: 35px 15px;
+            }
+
+            .title h2 {
+                font-size: 34px;
+            }
+
+            .card {
+                padding: 22px;
+            }
+
+            .card h3 {
+                font-size: 22px;
+            }
+
+            .card p {
+                font-size: 17px;
+            }
+
+            .formula .equation {
+                font-size: 26px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- ===== الهيدر ===== -->
+
+    <header>
+
+        <h1>⚡ المحاضرة الأولى — التيار الكهربي</h1>
+
+    </header>
+
+
+    <main class="lesson">
+
+
+        <!-- ===== عنوان الدرس ===== -->
+
+        <div class="title">
+
+            <h2>
+                التيار <span>الكهربي</span> ⚡
+            </h2>
+
+            <p>
+                المحاضرة الأولى في الكهرباء التيارية
+            </p>
+
+        </div>
+
+
+        <!-- ===== مقدمة ===== -->
+
+        <div class="card">
+
+            <h3>📚 أولًا: الفيزياء والكهرباء</h3>
+
+            <p>
+                الفيزياء تهتم بدراسة الظواهر الطبيعية والقوانين
+                التي تفسرها، ومن فروعها الفيزياء الكهربية التي
+                تدرس الظواهر المرتبطة بالشحنات والمجالات والتيار الكهربي.
+            </p>
+
+            <p>
+                وتنقسم الكهرباء إلى قسمين رئيسيين:
+            </p>
+
+            <ul class="points">
+
+                <li>
+                    ⚡ <strong>الكهربية الاستاتيكية:</strong>
+                    تهتم بدراسة الشحنات الكهربية وهي في حالة سكون.
+                </li>
+
+                <li>
+                    🔌 <strong>الكهربية التيارية:</strong>
+                    تهتم بدراسة الظواهر الناتجة عن حركة الشحنات.
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <!-- ===== التيار الكهربي ===== -->
+
+        <div class="card">
+
+            <h3>⚡ ثانيًا: ما هو التيار الكهربي؟</h3>
+
+            <p>
+                التيار الكهربي هو حركة أو سريان للشحنات
+                الكهربية داخل موصل.
+            </p>
+
+            <div class="note">
+
+                <strong>معلومة مهمة:</strong>
+
+                لكي يسري تيار كهربي يجب أن تتحرك الشحنات
+                داخل مجال كهربي مؤثر عليها.
+
+            </div>
+
+        </div>
+
+
+        <!-- ===== المجال الكهربي ===== -->
+
+        <div class="card">
+
+            <h3>🧲 ثالثًا: المجال الكهربي واتجاهه</h3>
+
+            <p>
+                المجال الكهربي هو المنطقة المحيطة بالشحنة
+                التي يظهر فيها تأثير القوة الكهربية.
+            </p>
+
+            <ul class="points">
+
+                <li>
+                    الشحنة الموجبة تتحرك في اتجاه المجال الكهربي.
+                </li>
+
+                <li>
+                    الشحنة السالبة تتحرك عكس اتجاه المجال الكهربي.
+                </li>
+
+                <li>
+                    اتجاه المجال الكهربي يكون من الشحنة الموجبة
+                    إلى الشحنة السالبة.
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <!-- ===== المواد ===== -->
+
+        <div class="card">
+
+            <h3>🔌 رابعًا: المواد من حيث توصيل الكهرباء</h3>
+
+            <p>
+                تختلف قدرة المواد على توصيل التيار الكهربي
+                حسب طبيعة الشحنات الموجودة بها وقدرتها على الحركة.
+            </p>
+
+            <ul class="points">
+
+                <li>
+                    🟢 <strong>الموصلات:</strong>
+                    تحتوي على إلكترونات حرة يمكنها الحركة، مثل النحاس والألومنيوم.
+                </li>
+
+                <li>
+                    🟡 <strong>أشباه الموصلات:</strong>
+                    خواصها في التوصيل تقع بين الموصلات والعوازل،
+                    وتتأثر ظروف توصيلها بعوامل مختلفة.
+                </li>
+
+                <li>
+                    🔴 <strong>العوازل:</strong>
+                    لا تسمح بمرور التيار بسهولة بسبب عدم وجود
+                    شحنات حرة قابلة للحركة بدرجة كافية.
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <!-- ===== الإلكترونات الحرة ===== -->
+
+        <div class="card">
+
+            <h3>🔵 خامسًا: الإلكترونات الحرة</h3>
+
+            <p>
+                في المعادن توجد إلكترونات حرة يمكنها الحركة
+                داخل المادة عند وجود مجال كهربي.
+            </p>
+
+            <p>
+                وتتحرك الإلكترونات الحرة في اتجاه معاكس
+                لاتجاه المجال الكهربي.
+            </p>
+
+        </div>
+
+
+        <!-- ===== الكثافة العددية ===== -->
+
+        <div class="card">
+
+            <h3>📊 سادسًا: الكثافة العددية للإلكترونات</h3>
+
+            <p>
+                الكثافة العددية هي عدد الإلكترونات الحرة الموجودة
+                في وحدة الحجوم من المادة.
+            </p>
+
+            <div class="formula">
+
+                <div class="equation">
+                    n = N ÷ Vol
+                </div>
+
+                <small>
+                    n = الكثافة العددية &nbsp; | &nbsp;
+                    N = عدد الإلكترونات &nbsp; | &nbsp;
+                    Vol = الحجم
+                </small>
+
+            </div>
+
+            <div class="example">
+
+                <h4>🧮 مثال</h4>
+
+                <p>
+                    مكعب من النحاس طول ضلعه 2 cm،
+                    وعدد الإلكترونات الحرة فيه
+                    16 × 10²⁰ إلكترون.
+                </p>
+
+                <p>
+                    حجم المكعب:
+                </p>
+
+                <p>
+                    Vol = 2 × 2 × 2 = 8 cm³
+                </p>
+
+                <p>
+                    إذن:
+                </p>
+
+                <p class="answer">
+                    n = (16 × 10²⁰) ÷ 8
+                    = 2 × 10²⁰ إلكترون/cm³
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- ===== شروط مرور التيار ===== -->
+
+        <div class="card">
+
+            <h3>🔋 سابعًا: شروط مرور تيار كهربي</h3>
+
+            <p>
+                لكي يمر تيار كهربي مستمر في دائرة يجب توافر
+                مجموعة من الشروط الأساسية.
+            </p>
+
+            <ul class="points">
+
+                <li>
+                    وجود مسار مغلق للتيار.
+                </li>
+
+                <li>
+                    وجود مصدر للطاقة الكهربية.
+                </li>
+
+                <li>
+                    وجود مادة موصلة تسمح بحركة الشحنات.
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <!-- ===== المقاومة ===== -->
+
+        <div class="card">
+
+            <h3>Ω ثامنًا: المقاومة الكهربية</h3>
+
+            <p>
+                المقاومة الكهربية هي الممانعة التي يلقاها
+                التيار الكهربي أثناء مروره في موصل.
+            </p>
+
+            <div class="formula">
+
+                <div class="equation">
+                    وحدة المقاومة = Ω
+                </div>
+
+                <small>
+                    وتسمى الأوم
+                </small>
+
+            </div>
+
+            <div class="note">
+
+                <strong>ملاحظة:</strong>
+
+                في أشباه الموصلات تزداد قابلية التوصيل
+                عادةً بزيادة درجة الحرارة، بينما تختلف
+                سلوكيات المواد الموصلة عن ذلك.
+
+            </div>
+
+        </div>
+
+
+        <!-- ===== الشحنة ===== -->
+
+        <div class="card">
+
+            <h3>🔋 تاسعًا: الشحنة الكهربية</h3>
+
+            <p>
+                يمكن حساب مقدار الشحنة الكهربية الكلية
+                لمجموعة من الإلكترونات من العلاقة:
+            </p>
+
+            <div class="formula">
+
+                <div class="equation">
+                    Q = N × e
+                </div>
+
+                <small>
+                    Q = الشحنة الكلية
+                    &nbsp; | &nbsp;
+                    N = عدد الإلكترونات
+                    &nbsp; | &nbsp;
+                    e = شحنة الإلكترون
+                </small>
+
+            </div>
+
+            <div class="formula">
+
+                <div class="equation">
+                    e = 1.6 × 10⁻¹⁹ C
+                </div>
+
+                <small>
+                    مقدار شحنة الإلكترون
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <!-- ===== اتجاه التيار ===== -->
+
+        <div class="card">
+
+            <h3>🔄 عاشرًا: اتجاه التيار الكهربي</h3>
+
+            <p>
+                يوجد اتجاهان مهمان يجب التمييز بينهما:
+            </p>
+
+            <div class="table-container">
+
+                <table>
+
+                    <tr>
+                        <th>النوع</th>
+                        <th>الاتجاه</th>
+                    </tr>
+
+                    <tr>
+                        <td>التيار الاصطلاحي</td>
+
+                        <td>
+                            اتجاه حركة الشحنات الموجبة،
+                            من القطب الموجب إلى القطب السالب خارج المصدر.
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>الاتجاه الإلكتروني</td>
+
+                        <td>
+                            اتجاه حركة الإلكترونات،
+                            ويكون عكس اتجاه التيار الاصطلاحي.
+                        </td>
+                    </tr>
+
+                </table>
+
+            </div>
+
+            <div class="note">
+
+                <strong>احفظها:</strong>
+
+                اتجاه حركة الشحنة السالبة يكون عكس اتجاه
+                حركة الشحنة الموجبة.
+
+            </div>
+
+        </div>
+
+
+        <!-- ===== البطاريات ===== -->
+
+        <div class="card">
+
+            <h3>🔋 الحادية عشرة: البطاريات</h3>
+
+            <p>
+                البطارية تعمل كمصدر للطاقة الكهربية في الدائرة،
+                وتوفر فرق الجهد الذي يساعد على حركة الشحنات.
+            </p>
+
+            <div class="note">
+
+                <strong>ملاحظة مهمة:</strong>
+
+                عند وجود بطاريتين متساويتين ومتضادتين في دائرة،
+                يمكن أن تكون محصلة القوة الدافعة الكهربية صفرًا،
+                وبالتالي لا يمر تيار في الدائرة.
+
+            </div>
+
+        </div>
+
+
+        <!-- ===== أمثلة الاتجاه ===== -->
+
+        <div class="card">
+
+            <h3>🧮 أمثلة على اتجاه التيار</h3>
+
+            <div class="example">
+
+                <h4>مثال 1</h4>
+
+                <p>
+                    إذا كان المصدر موضحًا بحيث يكون قطبه الموجب
+                    في جهة والقطب السالب في الجهة الأخرى،
+                    فإن التيار الاصطلاحي يخرج من القطب الموجب
+                    ويمر خلال عناصر الدائرة ثم يعود إلى القطب السالب.
+                </p>
+
+            </div>
+
+            <div class="example">
+
+                <h4>مثال 2</h4>
+
+                <p>
+                    الإلكترونات تتحرك داخل الدائرة في الاتجاه
+                    المعاكس للاتجاه الاصطلاحي للتيار.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- ===== ملخص ===== -->
+
+        <div class="card">
+
+            <h3>🧠 ملخص الدرس</h3>
+
+            <ul class="points">
+
+                <li>
+                    التيار الكهربي ينتج عن حركة الشحنات.
+                </li>
+
+                <li>
+                    الشحنة الموجبة تتحرك مع اتجاه المجال.
+                </li>
+
+                <li>
+                    الإلكترونات تتحرك عكس اتجاه المجال.
+                </li>
+
+                <li>
+                    الموصلات تحتوي على شحنات حرة قابلة للحركة.
+                </li>
+
+                <li>
+                    الكثافة العددية:
+                    <strong>n = N ÷ Vol</strong>
+                </li>
+
+                <li>
+                    الشحنة الكلية:
+                    <strong>Q = N × e</strong>
+                </li>
+
+                <li>
+                    شحنة الإلكترون:
+                    <strong>e = 1.6 × 10⁻¹⁹ C</strong>
+                </li>
+
+                <li>
+                    اتجاه التيار الاصطلاحي عكس اتجاه حركة الإلكترونات.
+                </li>
+
+                <li>
+                    يجب أن تكون الدائرة مغلقة لمرور تيار مستمر.
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <!-- ===== سؤال تدريبي ===== -->
+
+        <div class="card">
+
+            <h3>📝 اختبر نفسك</h3>
+
+            <div class="example">
+
+                <h4>السؤال الأول</h4>
+
+                <p>
+                    إذا تحركت الشحنات الموجبة في موصل،
+                    فما اتجاه حركتها بالنسبة لاتجاه المجال الكهربي؟
+                </p>
+
+                <p>
+                    أ) عكس اتجاه المجال
+                    <br>
+                    ب) مع اتجاه المجال
+                    <br>
+                    ج) عمودي على المجال
+                </p>
+
+            </div>
+
+            <div class="example">
+
+                <h4>السؤال الثاني</h4>
+
+                <p>
+                    احسب الشحنة الكلية لـ
+                    5 × 10¹⁹ إلكترون.
+                </p>
+
+                <p>
+                    استخدم:
+                </p>
+
+                <p class="answer">
+                    Q = N × e
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- ===== العودة ===== -->
+
+        <a href="physics.html" class="back-button">
+            ← العودة إلى صفحة الفيزياء
+        </a>
+
+
+    </main>
+
+
+    <!-- ===== نظام الوضع الليلي والفاتح ===== -->
+
+    <script src="theme.js"></script>
+
+</body>
+
+</html>

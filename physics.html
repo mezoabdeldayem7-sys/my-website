@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>الفيزياء ⚛️</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #0b0b0b;
+            color: white;
+        }
+
+        /* ===== الشريط العلوي ===== */
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            padding: 18px 8%;
+
+            background: #141414;
+
+            border-bottom: 1px solid #333;
+        }
+
+        header h2 {
+            margin: 0;
+            color: gold;
+        }
+
+        header a {
+            color: white;
+            text-decoration: none;
+
+            padding: 10px 18px;
+
+            border: 1px solid #444;
+            border-radius: 20px;
+
+            transition: 0.3s;
+        }
+
+        header a:hover {
+            color: black;
+            background: gold;
+        }
+
+        /* ===== الصفحة الرئيسية ===== */
+
+        .hero {
+            min-height: 70vh;
+
+            display: flex;
+            flex-direction: column;
+
+            justify-content: center;
+            align-items: center;
+
+            text-align: center;
+
+            padding: 30px 20px;
+
+            background:
+                radial-gradient(
+                    circle at center,
+                    #252000 0%,
+                    #0b0b0b 55%
+                );
+        }
+
+        .hero h1 {
+            font-size: 55px;
+            margin: 10px 0;
+        }
+
+        .hero h1 span {
+            color: gold;
+        }
+
+        .hero p {
+            color: #ccc;
+            font-size: 20px;
+            line-height: 1.8;
+        }
+
+        /* ===== الاختيارات ===== */
+
+        .choices {
+            padding: 70px 8%;
+            text-align: center;
+        }
+
+        .choices h2 {
+            font-size: 38px;
+        }
+
+        .choices h2 span {
+            color: gold;
+        }
+
+        .cards {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 25px;
+
+            margin-top: 40px;
+        }
+
+        .card {
+            width: 250px;
+
+            padding: 30px;
+
+            background: #181818;
+
+            border: 1px solid #333;
+
+            border-radius: 18px;
+
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            border-color: gold;
+        }
+
+        .icon {
+            font-size: 45px;
+        }
+
+        .card h3 {
+            color: gold;
+            font-size: 23px;
+        }
+
+        .card p {
+            color: #bbb;
+            line-height: 1.7;
+        }
+
+        .main-button {
+            padding: 12px 25px;
+
+            border: none;
+            border-radius: 25px;
+
+            background: gold;
+            color: black;
+
+            font-size: 16px;
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.3s;
+        }
+
+        .main-button:hover {
+            transform: scale(1.05);
+            background: white;
+        }
+
+        footer {
+            padding: 25px;
+
+            text-align: center;
+
+            background: #080808;
+
+            color: #888;
+        }
+
+        /* ===== الموبايل ===== */
+
+        @media (max-width: 700px) {
+
+            header {
+                padding: 15px 5%;
+            }
+
+            .hero h1 {
+                font-size: 38px;
+            }
+
+            .hero p {
+                font-size: 17px;
+            }
+
+            .card {
+                width: 90%;
+                max-width: 300px;
+            }
+
+        }
+body.light-mode {
+    background: #f5f5f5;
+    color: #111;
+}
+
+body.light-mode header {
+    background: white;
+    border-bottom-color: #ddd;
+}
+
+body.light-mode header a {
+    color: #111;
+    border-color: #ccc;
+}
+
+body.light-mode .hero {
+    background: #f5f5f5;
+}
+
+body.light-mode .hero p {
+    color: #555;
+}
+
+body.light-mode .card {
+    background: white;
+    border-color: #ddd;
+}
+
+body.light-mode .card p {
+    color: #555;
+}
+
+body.light-mode footer {
+    background: #eee;
+    color: #666;
+}
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- ===== الشريط العلوي ===== -->
+
+    <header>
+
+    <h2>⚛️ الفيزياء</h2>
+
+    <a href="index.html">
+        الرئيسية
+    </a>
+
+    
+</header>
+
+
+    <!-- ===== المقدمة ===== -->
+
+    <section class="hero">
+
+        <h1>
+
+            أهلاً بيك في
+            <span>عالم الفيزياء</span> ⚛️
+
+        </h1>
+
+        <p>
+
+            هنا هنبدأ رحلة الفيزياء مع بعض،
+            من الأساسيات لحد حل أصعب المسائل 🚀
+
+        </p>
+
+    </section>
+
+
+    <!-- ===== الاختيارات ===== -->
+
+    <section class="choices">
+
+        <h2>
+
+            ماذا تريد أن
+            <span>تتعلم؟</span>
+
+        </h2>
+
+
+        <div class="cards">
+
+
+            <!-- الدروس -->
+
+            <div class="card">
+
+                <div class="icon">
+                    📚
+                </div>
+
+                <h3>
+                    الدروس
+                </h3>
+
+                <p>
+                    شرح الدروس بطريقة بسيطة ومنظمة.
+                </p>
+
+                <a href="lessons.html" class="main-button">
+    دخول الدروس
+</a>
+
+            </div>
+
+
+            <!-- القوانين -->
+
+            <div class="card">
+
+                <div class="icon">
+                    📐
+                </div>
+
+                <h3>
+                    القوانين
+                </h3>
+
+                <p>
+                    أهم قوانين الفيزياء بطريقة سهلة.
+                </p>
+
+                <button class="main-button">
+                    القوانين
+                </button>
+
+            </div>
+
+
+            <!-- المسائل -->
+
+            <div class="card">
+
+                <div class="icon">
+                    📝
+                </div>
+
+                <h3>
+                    حل المسائل
+                </h3>
+
+                <p>
+                    تدرب على حل مسائل الفيزياء.
+                </p>
+
+                <button class="main-button">
+                    ابدأ الحل
+                </button>
+
+            </div>
+
+
+            <!-- الاختبارات -->
+
+            <div class="card">
+
+                <div class="icon">
+                    🧠
+                </div>
+
+                <h3>
+                    الاختبارات
+                </h3>
+
+                <p>
+                    اختبر نفسك وشوف مستواك.
+                </p>
+
+                <button class="main-button">
+                    ابدأ الاختبار
+                </button>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- ===== الفوتر ===== -->
+
+    <footer>
+
+        جميع الحقوق محفوظة © 2026
+
+    </footer>
+
+<script src="theme.js"></script>
+
+</body>
+
+</html>

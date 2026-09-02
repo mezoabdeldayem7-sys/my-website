@@ -267,6 +267,7 @@
             line-height: 1.7;
         }
 
+ 
         /* ===== التواصل ===== */
 
         .contact {
@@ -468,24 +469,19 @@
 
         <nav>
 
-            <a href="#home">الرئيسية</a>
+            <a href="#home" data-i18n="home">الرئيسية</a>
 
-            <a href="#about">عني</a>
+            <a href="#about" data-i18n="about">عني</a>
 
-            <a href="#services">الخدمات</a>
+            <a href="#services" data-i18n="services">الخدمات</a>
 
-            <a href="#contact">تواصل معي</a>
+            <a href="#contact" data-i18n="contact">تواصل معي</a>
 
-            <!-- زر الوضع -->
+            <a href="setting.html" class="settings-button">
+    ⚙️
+</a>
 
-            <button
-                class="theme-button"
-                onclick="toggleTheme()">
-
-                🌙
-
-            </button>
-
+            
         </nav>
 
     </header>
@@ -499,25 +495,19 @@
 
         <h1>
 
-            أهلاً بيك في
-            <span>موقعي</span>
+            <span data-i18n="welcome">أهلاً بيك في</span>
+            <span data-i18n="mySite">موقعي</span>
 
         </h1>
 
-        <p>
+        <p data-i18n="intro">
+    ده أول موقع بعمله من الصفر،
+    ودي مجرد البداية 🚀
+</p>
 
-            ده أول موقع بعمله من الصفر،
-            ودي مجرد البداية 🚀
-
-        </p>
-
-        <button
-            class="main-button"
-            onclick="welcome()">
-
-            ابدأ الآن
-
-        </button>
+        <a href="#physics" class="main-button" data-i18n="start">
+    ابدأ الآن
+</a>
 
     </section>
 
@@ -528,23 +518,20 @@
         class="about"
         id="about">
 
-        <h2>
-
-            من
-            <span>أنا؟</span>
-
-        </h2>
+        <h2 data-i18n="whoAmI">
+    من أنا؟
+</h2>
 
 
         <!-- صورتك الشخصية -->
 
         <img
-            src="profile.jpg"
-            alt="صورتي الشخصية"
-            class="profile-image">
+    src="profile.jpg"
+    alt="صورتي الشخصية"
+    data-i18n-alt="profileAlt"
+    class="profile-image">
 
-
-        <p>
+        <p data-i18n="about Text">
 
             أهلاً بيك في موقعي.
 
@@ -562,12 +549,9 @@
     <section
         id="services">
 
-        <h2>
-
-            ماذا
-            <span>أقدم؟</span>
-
-        </h2>
+        <h2 data-i18n="whatOffer">
+    ماذا أقدم؟
+</h2>
 
 
         <div class="cards">
@@ -579,18 +563,15 @@
                     💻
                 </div>
 
-                <h3>
-                    تصميم مواقع
-                </h3>
+                <h3 data-i18n="webDesign">
+    تصميم مواقع
+</h3>
 
-                <p>
-
-                    تصميم مواقع عصرية
-                    وسريعة ومتوافقة
-                    مع الموبايل والكمبيوتر.
-
-                </p>
-
+                <p data-i18n="webDesignText">
+    تصميم مواقع عصرية
+    وسريعة ومتوافقة
+    مع الموبايل والكمبيوتر.
+</p>
             </div>
 
 
@@ -600,17 +581,13 @@
                     🎨
                 </div>
 
-                <h3>
-                    تصميم واجهات
-                </h3>
-
-                <p>
-
-                    واجهات جميلة وبسيطة
-                    وسهلة الاستخدام.
-
-                </p>
-
+                <h3 data-i18n="uiDesign">
+    تصميم واجهات
+</h3>
+            <p data-i18n="uiDesignText">
+    واجهات جميلة وبسيطة
+    وسهلة الاستخدام.
+            </p>
             </div>
 
 
@@ -619,9 +596,8 @@
                 <div class="icon">
                     🚀
                 </div>
-
-                <h3>
-                    تطوير المواقع
+                <h3 data-i18n="development">
+    تطوير المواقع
                 </h3>
 
                 <p>
@@ -637,6 +613,39 @@
         </div>
 
     </section>
+
+    <!-- ===== قسم الفيزياء ===== -->
+
+<section id="physics">
+
+    <h2>
+        ابدأ <span>رحلتك</span> 🚀
+    </h2>
+
+    <div class="cards">
+
+        <div class="card">
+
+            <div class="icon">
+                ⚛️
+            </div>
+
+            <h3>
+                فيزياء
+            </h3>
+
+            <p>
+                ابدأ رحلتك في عالم الفيزياء
+                وتعلم القوانين وحل المسائل.
+            </p>
+
+            <a href="physics.html" class="main-button">
+    دخول الفيزياء
+</a>
+
+        </div>
+
+    </div>
 
 
     <!-- ===== التواصل ===== -->
@@ -679,7 +688,7 @@
     <svg
         class="whatsapp-icon"
         viewBox="0 0 24 24"
-        fill="white">
+        fill="green">
 
         <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.372-.025-.521-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.67-.51-.173-.008-.372-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.626.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
 
@@ -720,11 +729,11 @@
 
         function welcome() {
 
-            alert(
-                "أهلاً بيك ❤️🚀\nلسه البداية!"
-            );
+    document.getElementById("physics").scrollIntoView({
+        behavior: "smooth"
+    });
 
-        }
+}
 
 
         /* زر إرسال الرسالة */
@@ -771,6 +780,7 @@
 
 
     </script>
+<script src="theme.js"></script>
 
 
 </body>
