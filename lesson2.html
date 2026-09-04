@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>الدرس الثاني | شدة التيار الكهربي</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Tahoma, sans-serif;
+            background: #0b0b0b;
+            color: #fff;
+            line-height: 1.9;
+        }
+
+        header {
+            padding: 28px 15px;
+            text-align: center;
+            background: linear-gradient(135deg, #111, #1b1b1b);
+            border-bottom: 2px solid #c9a227;
+        }
+
+        header h1 {
+            margin: 0;
+            color: #d4af37;
+            font-size: 32px;
+        }
+
+        header p {
+            color: #ddd;
+            margin: 8px 0 0;
+            font-size: 18px;
+        }
+
+        .container {
+            max-width: 950px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .card {
+            background: #151515;
+            border: 1px solid #333;
+            border-radius: 16px;
+            padding: 22px;
+            margin-bottom: 22px;
+            box-shadow: 0 5px 20px rgba(0,0,0,.3);
+        }
+
+        .card h2 {
+            color: #d4af37;
+            margin-top: 0;
+            border-bottom: 1px solid #493f20;
+            padding-bottom: 8px;
+        }
+
+        .card h3 {
+            color: #f0cf5c;
+        }
+
+        .definition {
+            background: #102331;
+            border-right: 5px solid #48a9d6;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .important {
+            background: #302611;
+            border-right: 5px solid #d4af37;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .warning {
+            background: #301818;
+            border-right: 5px solid #b84b4b;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .formula {
+            direction: ltr;
+            text-align: center;
+            font-size: 30px;
+            color: #fff;
+            background: #090909;
+            padding: 18px;
+            border-radius: 12px;
+            margin: 15px 0;
+            border: 1px solid #444;
+            font-family: "Times New Roman", serif;
+        }
+
+        .formula small {
+            display: block;
+            direction: rtl;
+            font-family: Arial;
+            font-size: 15px;
+            color: #aaa;
+            margin-top: 8px;
+        }
+
+        .unit {
+            color: #d4af37;
+            font-weight: bold;
+        }
+
+        .example {
+            background: #242216;
+            border: 1px solid #675c2d;
+            border-radius: 14px;
+            padding: 18px;
+            margin-top: 15px;
+        }
+
+        .example-title {
+            color: #f0cf5c;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .answer {
+            background: #0e1e14;
+            border-right: 4px solid #5ba86a;
+            padding: 12px;
+            margin-top: 12px;
+            border-radius: 8px;
+        }
+
+        .graph-box {
+            background: #f4f0e8;
+            color: #111;
+            border-radius: 14px;
+            padding: 12px;
+            margin: 18px 0;
+            overflow-x: auto;
+        }
+
+        .graph-title {
+            text-align: center;
+            font-weight: bold;
+            color: #222;
+            margin-bottom: 5px;
+        }
+
+        svg {
+            display: block;
+            width: 100%;
+            max-width: 650px;
+            height: auto;
+            margin: auto;
+        }
+
+        .triangle-row {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .triangle {
+            position: relative;
+            width: 190px;
+            height: 165px;
+            background: #eee8dc;
+            color: #222;
+            clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: "Times New Roman", serif;
+            font-size: 25px;
+        }
+
+        .triangle-content {
+            margin-top: 35px;
+            text-align: center;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+            gap: 18px;
+        }
+
+        .mini-card {
+            background: #101010;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .list {
+            padding-right: 25px;
+        }
+
+        .list li {
+            margin: 7px 0;
+        }
+
+        .page-label {
+            display: inline-block;
+            background: #d4af37;
+            color: #111;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .back {
+            display: block;
+            width: fit-content;
+            margin: 30px auto 10px;
+            padding: 12px 28px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #111;
+            background: #d4af37;
+            font-weight: bold;
+        }
+
+        .back:hover {
+            background: #f0cf5c;
+        }
+
+        .footer {
+            text-align: center;
+            color: #777;
+            padding: 30px 10px;
+            border-top: 1px solid #333;
+            margin-top: 20px;
+        }
+
+        .ltr {
+            direction: ltr;
+            display: inline-block;
+            font-family: "Times New Roman", serif;
+        }
+
+        .equation {
+            direction: ltr;
+            text-align: center;
+            font-size: 22px;
+            font-family: "Times New Roman", serif;
+            margin: 12px 0;
+        }
+
+        .note-title {
+            color: #d4af37;
+            font-weight: bold;
+        }
+
+        @media(max-width:600px) {
+            header h1 {
+                font-size: 25px;
+            }
+
+            .container {
+                padding: 12px;
+            }
+
+            .card {
+                padding: 16px;
+            }
+
+            .formula {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>المحاضرة الثانية</h1>
+    <p>شدة التيار الكهربي ⚡</p>
+</header>
+
+<div class="container">
+
+    <!-- الصفحة 11 -->
+
+    <div class="card">
+
+        <span class="page-label">الصفحة 11</span>
+
+        <h2>📘 شدة التيار الكهربي</h2>
+
+        <div class="definition">
+            شدة التيار الكهربي هي <strong>معدل مرور الشحنات عبر مقطع الموصل</strong>.
+            <br><br>
+            وهي مقدار الشحنة الكهربية المارة عبر مقطع الموصل خلال زمن قدره ثانية واحدة.
+        </div>
+
+        <h3>القانون الأساسي</h3>
+
+        <div class="formula">
+            I = Q / t
+            <small>
+                شدة التيار = كمية الشحنة المارة عبر مقطع الموصل ÷ زمن مرور الشحنة
+            </small>
+        </div>
+
+        <h3>🔹 شدة التيار الكهربي</h3>
+
+        <ul class="list">
+            <li>هي معدل مرور الشحنات عبر مقطع الموصل.</li>
+            <li>هي مقدار الشحنة الكهربية المارة عبر مقطع الموصل خلال زمن قدره 1 sec.</li>
+        </ul>
+
+        <h3>📐 وحدة قياس شدة التيار</h3>
+
+        <div class="definition">
+            تقاس شدة التيار بوحدة <span class="unit">الأمبير (A)</span>.
+            <br>
+            والأمبير يكافئ كولوم / ثانية.
+        </div>
+
+        <div class="formula">
+            1 A = 1 C / 1 s
+        </div>
+
+        <h3>⚡ الأمبير</h3>
+
+        <div class="important">
+            الأمبير هو شدة التيار الكهربي المار في موصل عند مرور شحنة قدرها
+            <strong>1 C</strong> خلال زمن قدره <strong>1 sec</strong>.
+        </div>
+
+        <h3>🤔 ما معنى قولنا أن شدة التيار في موصل = 5A ؟</h3>
+
+        <div class="important">
+            أي أنه في كل مقطع من الموصل تمر شحنة قدرها
+            <strong>5 C</strong>
+            كل ثانية.
+        </div>
+
+        <h3>📌 لاحظ</h3>
+
+        <div class="important">
+
+            <div class="equation">
+                Q = N e
+            </div>
+
+            حيث:
+
+            <ul class="list">
+                <li><strong>Q</strong> = كمية الشحنة الكهربية.</li>
+                <li><strong>N</strong> = عدد الإلكترونات.</li>
+                <li><strong>e</strong> = شحنة الإلكترون.</li>
+            </ul>
+
+            <div class="formula">
+                e = 1.6 × 10<sup>-19</sup> C
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- الصفحة 12 -->
+
+    <div class="card">
+
+        <span class="page-label">الصفحة 12</span>
+
+        <h2>📐 العلاقات بين Q و N و e و I و t</h2>
+
+        <div class="triangle-row">
+
+            <div>
+                <div class="triangle">
+                    <div class="triangle-content">
+                        Q<br>
+                        <hr>
+                        N &nbsp;&nbsp; e
+                    </div>
+                </div>
+
+                <div class="equation">
+                    N = Q / e
+                </div>
+
+                <div class="equation">
+                    Q = Ne
+                </div>
+
+                <div class="equation">
+                    e = Q / N
+                </div>
+            </div>
+
+            <div>
+                <div class="triangle">
+                    <div class="triangle-content">
+                        Q<br>
+                        <hr>
+                        I &nbsp;&nbsp; t
+                    </div>
+                </div>
+
+                <div class="equation">
+                    I = Q / t
+                </div>
+
+                <div class="equation">
+                    Q = It
+                </div>
+
+                <div class="equation">
+                    t = Q / I
+                </div>
+            </div>
+
+        </div>
+
+        <h3>📌 ومن العلاقات السابقة نستنتج</h3>
+
+        <div class="grid">
+
+            <div class="mini-card">
+                <h3>عدد الإلكترونات</h3>
+                <div class="formula">
+                    N = Q / e
+                </div>
+                <div class="formula">
+                    N = It / e
+                </div>
+            </div>
+
+            <div class="mini-card">
+                <h3>كمية الشحنة</h3>
+                <div class="formula">
+                    Q = Ne
+                </div>
+                <div class="formula">
+                    Q = It
+                </div>
+            </div>
+
+            <div class="mini-card">
+                <h3>شدة التيار</h3>
+                <div class="formula">
+                    I = Q / t
+                </div>
+                <div class="formula">
+                    I = Ne / t
+                </div>
+            </div>
+
+        </div>
+
+        <h2>📏 العلاقة باستخدام سرعة الإلكترونات</h2>
+
+        <div class="definition">
+
+            السرعة الانجرافية:
+
+            <div class="formula">
+                v = x / t
+            </div>
+
+            ومنه:
+
+            <div class="formula">
+                t = x / v
+            </div>
+
+        </div>
+
+        <div class="equation">
+            I = Ne / t
+        </div>
+
+        <div class="equation">
+            I = Ne / (x / v)
+        </div>
+
+        <div class="equation">
+            I = Nev / x
+        </div>
+
+        <p>
+            وبالضرب في مساحة المقطع <strong>A</strong>:
+        </p>
+
+        <div class="equation">
+            I = NevA / xA
+        </div>
+
+        <div class="equation">
+            I = NevA / V<sub>ol</sub>
+        </div>
+
+        <div class="equation">
+            I = nevA
+        </div>
+
+        <div class="important">
+            حيث:
+            <br>
+            <strong>n</strong> = عدد الإلكترونات في وحدة الحجم.
+        </div>
+
+        <h3>📊 رسم توضيحي للموصل</h3>
+
+        <div class="graph-box">
+
+            <svg viewBox="0 0 700 230">
+
+                <defs>
+                    <marker id="arrow" markerWidth="10" markerHeight="10"
+                        refX="8" refY="3" orient="auto">
+                        <path d="M0,0 L0,6 L9,3 z" fill="#111"/>
+                    </marker>
+                </defs>
+
+                <ellipse cx="130" cy="115" rx="38" ry="70"
+                         fill="none" stroke="#111" stroke-width="3"/>
+
+                <path d="M130 45 L600 45
+                         C640 45 640 185 600 185
+                         L130 185"
+                      fill="none" stroke="#111" stroke-width="3"/>
+
+                <ellipse cx="130" cy="115" rx="38" ry="70"
+                         fill="#ddd" stroke="#111" stroke-width="3"/>
+
+                <line x1="60" y1="115" x2="540" y2="115"
+                      stroke="#111" stroke-width="3"
+                      marker-end="url(#arrow)"/>
+
+                <circle cx="70" cy="115" r="17"
+                        fill="none" stroke="#111" stroke-width="3"/>
+
+                <text x="63" y="122" font-size="24">+</text>
+
+                <text x="350" y="35" font-size="22">A</text>
+
+            </svg>
+
+        </div>
+
+    </div>
+
+
+    <!-- الصفحة 13 -->
+
+    <div class="card">
+
+        <span class="page-label">الصفحة 13</span>
+
+        <h2>📌 شدة التيار في الموصل الواحد</h2>
+
+        <div class="important">
+            شدة التيار في الموصل الواحد ثابتة:
+            <div class="formula">
+                I₁ = I₂ = I₃
+            </div>
+        </div>
+
+        <div class="graph-box">
+
+            <svg viewBox="0 0 750 190">
+
+                <defs>
+                    <marker id="arr2" markerWidth="10" markerHeight="10"
+                        refX="8" refY="3" orient="auto">
+                        <path d="M0,0 L0,6 L9,3 z" fill="#111"/>
+                    </marker>
+                </defs>
+
+                <path d="M80 70 L260 70
+                         C310 70 330 110 390 115
+                         C460 120 500 120 550 115
+                         L650 115"
+                      fill="none" stroke="#222" stroke-width="5"/>
+
+                <line x1="40" y1="70" x2="100" y2="70"
+                      stroke="#111" stroke-width="3"
+                      marker-end="url(#arr2)"/>
+
+                <line x1="300" y1="100" x2="350" y2="110"
+                      stroke="#111" stroke-width="3"
+                      marker-end="url(#arr2)"/>
+
+                <line x1="590" y1="115" x2="690" y2="115"
+                      stroke="#111" stroke-width="3"
+                      marker-end="url(#arr2)"/>
+
+                <text x="55" y="55" font-size="22">I₁</text>
+                <text x="305" y="92" font-size="22">I₂</text>
+                <text x="665" y="105" font-size="22">I₃</text>
+
+            </svg>
+
+        </div>
+
+
+        <h2>📈 رسومات بيانية هامة</h2>
+
+        <div class="grid">
+
+            <div class="graph-box">
+
+                <div class="graph-title">العلاقة بين N و t</div>
+
+                <svg viewBox="0 0 300 230">
+
+                    <line x1="55" y1="190" x2="55" y2="30"
+                          stroke="#111" stroke-width="3"/>
+                    <line x1="55" y1="190" x2="260" y2="190"
+                          stroke="#111" stroke-width="3"/>
+
+                    <line x1="55" y1="190" x2="220" y2="65"
+                          stroke="#9a5555" stroke-width="4"/>
+
+                    <text x="35" y="40" font-size="22">N</text>
+                    <text x="250" y="215" font-size="22">t</text>
+
+                </svg>
+
+                <div class="equation">
+                    Slope = ΔN / Δt = I / e
+                </div>
+
+            </div>
+
+
+            <div class="graph-box">
+
+                <div class="graph-title">تيار مستمر لا يتغير</div>
+
+                <svg viewBox="0 0 300 230">
+
+                    <line x1="55" y1="190" x2="55" y2="30"
+                          stroke="#111" stroke-width="3"/>
+                    <line x1="55" y1="190" x2="260" y2="190"
+                          stroke="#111" stroke-width="3"/>
+
+                    <line x1="55" y1="90" x2="220" y2="90"
+                          stroke="#9a5555" stroke-width="4"/>
+
+                    <text x="35" y="40" font-size="22">I</text>
+                    <text x="250" y="215" font-size="22">t</text>
+
+                </svg>
+
+                <p>
+                    ثابت الشدة والاتجاه.
+                </p>
+
+            </div>
+
+
+            <div class="graph-box">
+
+                <div class="graph-title">العلاقة بين Q و t</div>
+
+                <svg viewBox="0 0 300 230">
+
+                    <line x1="55" y1="190" x2="55" y2="30"
+                          stroke="#111" stroke-width="3"/>
+                    <line x1="55" y1="190" x2="260" y2="190"
+                          stroke="#111" stroke-width="3"/>
+
+                    <line x1="55" y1="190" x2="220" y2="55"
+                          stroke="#9a5555" stroke-width="4"/>
+
+                    <text x="35" y="40" font-size="22">Q</text>
+                    <text x="250" y="215" font-size="22">t</text>
+
+                </svg>
+
+                <div class="equation">
+                    Slope = ΔQ / Δt = I
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <h2>🧮 أمثلة</h2>
+
+        <div class="example">
+
+            <div class="example-title">1️⃣ احسب شدة التيار الناتجة عن مرور 20 nC خلال 4 μsec</div>
+
+            <div class="equation">
+                I = Q / t
+            </div>
+
+            <div class="equation">
+                I = (20 × 10<sup>-9</sup>) / (4 × 10<sup>-6</sup>)
+            </div>
+
+            <div class="equation">
+                I = 5 × 10<sup>-3</sup> A
+            </div>
+
+            <div class="answer">
+                <strong>I = 5 mA = 5000 μA</strong>
+            </div>
+
+        </div>
+
+
+        <div class="example">
+
+            <div class="example-title">2️⃣ احسب شدة التيار الناتجة عن مرور 5 × 10²⁰ إلكترون خلال 4 sec</div>
+
+            <div class="equation">
+                I = Ne / t
+            </div>
+
+            <div class="equation">
+                I =
+                (5 × 10<sup>20</sup> × 1.6 × 10<sup>-19</sup>) / 4
+            </div>
+
+            <div class="answer">
+                <strong>I = 20 A</strong>
+            </div>
+
+        </div>
+
+
+        <div class="example">
+
+            <div class="example-title">
+                3️⃣ احسب شدة التيار الناتجة عن مرور
+                5 × 10²⁰ إلكترون في سلك طوله 20 m بسرعة 0.25 m/sec
+            </div>
+
+            <div class="equation">
+                I = Nev / x
+            </div>
+
+            <div class="equation">
+                I =
+                (5 × 10<sup>20</sup> × 1.6 × 10<sup>-19</sup> × 0.25) / 20
+            </div>
+
+            <div class="answer">
+                <strong>I = 1 A</strong>
+            </div>
+
+        </div>
+
+
+        <div class="example">
+
+            <div class="example-title">
+                4️⃣ إذا كان التيار شدته 5A
+            </div>
+
+            <div class="equation">
+                ΔQ / Δt = I = 5 C/s
+            </div>
+
+            <p>
+                أي أن معدل مرور الشحنات من مقطع الموصل =
+                <strong>5 C/s</strong>.
+            </p>
+
+            <div class="equation">
+                ΔN / Δt = I / e
+            </div>
+
+            <div class="equation">
+                ΔN / Δt =
+                5 / (1.6 × 10<sup>-19</sup>)
+            </div>
+
+            <div class="answer">
+                <strong>
+                    = 3.125 × 10<sup>19</sup> إلكترون / ثانية
+                </strong>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- الصفحة 14 -->
+
+    <div class="card">
+
+        <span class="page-label">الصفحة 14</span>
+
+        <h2>📊 التعامل مع سؤال الرسم البياني</h2>
+
+        <div class="definition">
+
+            إذا كان الرسم البياني يمثل العلاقة بين كمية الشحنة
+            <strong>Q</strong>
+            والزمن
+            <strong>t</strong>:
+
+            <div class="formula">
+                I = Q / t
+            </div>
+
+            فإن <strong>مي
