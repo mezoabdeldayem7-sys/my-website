@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المعمل الافتراضي للكهرباء</title>
+
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#090d15;color:#eee;font-family:Arial,sans-serif}
+header{background:#111927;border-bottom:1px solid #c49b43;padding:16px;text-align:center}
+header h2{margin:0;color:#eac46e}
+header p{margin:7px 0 0;color:#9ba9bd;font-size:13px}
+.app{display:grid;grid-template-columns:230px 1fr;min-height:calc(100vh - 75px)}
+.sidebar{background:#101825;border-left:1px solid #26354a;padding:14px}
+.sidebar h3{color:#eac46e;margin-top:5px}
+.tools{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.tool{background:#1a2738;border:1px solid #34445a;border-radius:10px;padding:10px 5px;text-align:center;cursor:grab;min-height:83px;touch-action:none;user-select:none}
+.tool:hover{border-color:#eac46e}
+.tool .preview{height:38px;display:flex;align-items:center;justify-content:center}
+.tool svg{width:100%;height:38px}
+.tool span{font-size:12px;color:#d8e0ec}
+.drag-ghost{position:fixed;z-index:99999;pointer-events:none;opacity:.85;width:110px;background:#1a2738;border:2px dashed #eac46e;border-radius:10px;padding:10px 5px;text-align:center;transform:translate(-50%,-50%)}
+.drag-ghost .preview{height:38px}
+.drag-ghost svg{width:100%;height:38px}
+.drag-ghost span{font-size:12px}
+
+.workspace-area{padding:15px;min-width:0}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+button{background:#26364c;color:#fff;border:1px solid #435774;padding:9px 13px;border-radius:8px;cursor:pointer}
+button:hover{border-color:#eac46e}
+button.primary{background:#9b7429;border-color:#eac46e}
+button.danger{background:#652d35}
+button.active{background:#176b50;border-color:#55dba6}
+
+.lab{min-height:480px;height:65vh;max-height:750px;position:relative;overflow:hidden;border:1px solid #34445a;border-radius:15px;background-color:#111a27;background-image:linear-gradient(#24324755 1px,transparent 1px),linear-gradient(90deg,#24324755 1px,transparent 1px);background-size:25px 25px;touch-action:pan-y}
+.lab-title{position:absolute;top:12px;right:14px;color:#8293aa;font-size:12px;pointer-events:none}
+
+.device{position:absolute;width:116px;height:120px;transform:translate(-50%,-50%);cursor:grab;touch-action:none;user-select:none;z-index:3}
+.device:active{cursor:grabbing}
+.device.selected{z-index:5}
+.device-name{text-align:center;color:#e5eaf2;font-size:12px;margin-top:-2px;white-space:nowrap}
+.symbol{height:67px;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 3px 4px #0008)}
+.symbol svg{width:112px;height:65px;overflow:visible}
+
+.meter-screen{display:none;width:92px;min-height:24px;margin:1px auto 0;padding:4px 3px;background:#071b17;border:1px solid #36a879;border-radius:5px;color:#54f0ae;font-size:13px;font-weight:bold;text-align:center;direction:ltr;box-shadow:inset 0 0 8px #000;white-space:nowrap}
+.device.is-meter .meter-screen{display:block}
+
+.terminal{position:absolute;width:17px;height:17px;border-radius:50%;border:3px solid #fff;background:#d7a94d;top:43px;cursor:crosshair;z-index:8;box-shadow:0 0 7px #000}
+.terminal.a{left:-2px}
+.terminal.b{right:-2px}
+.terminal.waiting{background:#44e99a;box-shadow:0 0 12px #44e99a}
+
+.wire-layer{position:absolute;inset:0;width:100%;height:100%;z-index:2;overflow:visible;pointer-events:none}
+.wire{fill:none;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+.wire-hit{stroke:transparent;stroke-width:20;fill:none;pointer-events:stroke;cursor:pointer}
+.wire.selected{filter:drop-shadow(0 0 4px #fff)}
+.waypoint{fill:#fff;stroke:#eac46e;stroke-width:3;cursor:move;pointer-events:all}
+.waypoint:hover{fill:#54f0ae}
+.endpoint-dot{fill:#eac46e;stroke:#fff;stroke-width:2;pointer-events:none}
+
+.wire-panel{margin-top:12px;padding:14px;background:#111927;border:1px solid #34445a;border-radius:12px}
+.wire-panel h3{margin:0 0 12px;color:#eac46e}
+.wire-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.wire-controls label{font-size:13px;color:#bdc9d9}
+.wire-controls select,.wire-controls input[type=number]{background:#0b111b;color:#fff;border:1px solid #42536a;padding:8px;border-radius:7px}
+.wire-controls input[type=color]{width:42px;height:35px;background:#0b111b;border:1px solid #42536a;border-radius:6px;padding:3px}
+.wire-controls input[type=range]{width:100px;accent-color:#eac46e}
+.wire-help{font-size:12px;color:#91a0b4;line-height:1.8;margin:10px 0 0}
+.wire-tools-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.wire-tools-row button{font-size:12px}
+
+.settings{margin-top:13px;padding:15px;background:#111927;border:1px solid #34445a;border-radius:12px;display:none}
+.settings h3{color:#eac46e;margin-top:0}
+.setting-row{display:flex;align-items:center;gap:10px;margin:12px 0;flex-wrap:wrap}
+.setting-row label{min-width:125px;color:#b8c5d7;font-size:13px}
+.setting-row input{accent-color:#eac46e;flex:1;min-width:100px}
+.setting-row input[type=number]{background:#0b111b;color:#fff;border:1px solid #42536a;padding:8px;border-radius:7px;width:110px}
+.meter-info{background:#0b111b;border:1px solid #34445a;border-radius:9px;padding:10px;margin-top:10px;color:#dce5f2;font-size:13px}
+.meter-info strong{display:block;color:#54f0ae;font-size:20px;margin-top:8px;direction:ltr;text-align:center}
+.readings{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:13px}
+.reading{background:#111927;border:1px solid #29394e;padding:13px;border-radius:10px;text-align:center}
+.reading small{color:#9eacc0}
+.reading strong{display:block;color:#eac46e;font-size:19px;margin-top:7px}
+.status{margin-top:12px;background:#111927;border:1px solid #29394e;padding:12px;border-radius:9px;color:#b8c5d7;font-size:13px}
+.status.good{border-color:#318c62;color:#79e5ac}
+.status.bad{border-color:#a64c55;color:#ff9ca3}
+.hint{color:#91a0b4;font-size:12px;line-height:1.8;margin-top:12px}
+
+@media(max-width:750px){
+ .app{grid-template-columns:1fr}
+ .sidebar{border-left:0;border-bottom:1px solid #26354a}
+ .tools{grid-template-columns:repeat(5,minmax(65px,1fr))}
+ .tool{min-height:75px}
+ .tool span{font-size:10px}
+ .workspace-area{padding:9px}
+ .lab{height:58vh;min-height:390px}
+ .readings{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:420px){
+ .tools{grid-template-columns:repeat(3,1fr)}
+ .toolbar button{font-size:11px;padding:8px}
+ .device{width:100px}
+ .symbol svg{width:100px}
+ .wire-controls{gap:7px}
+ .wire-controls label{font-size:12px}
+}
+</style>
+</head>
+
+<body>
+<header>
+ <h2>⚡ المعمل الافتراضي للكهرباء</h2>
+ <p>كوّن دائرتك الكهربائية، وصّل الأجهزة، وشغّل المحاكاة</p>
+</header>
+
+<div class="app">
+ <aside class="sidebar">
+  <h3>🧰 أدوات المعمل</h3>
+  <div class="tools" id="tools"></div>
+  <p class="hint">اسحب أي أداة من هنا وأفلتها على طاولة المعمل.</p>
+ </aside>
+
+ <main class="workspace-area">
+  <div class="toolbar">
+   <button class="primary" id="runBtn">▶️ تشغيل التحليل</button>
+   <button id="stopBtn">■ إيقاف</button>
+   <button id="resetBtn">↻ إعادة ضبط</button>
+   <button class="danger" id="deleteBtn">حذف الجهاز المحدد</button>
+   <button class="danger" id="deleteWireBtn">حذف السلك المحدد</button>
+  </div>
+
+  <div class="lab" id="lab">
+   <div class="lab-title">طاولة التجارب الكهربائية</div>
+   <svg class="wire-layer" id="wireLayer"></svg>
+  </div>
+
+  <section class="wire-panel">
+   <h3>🧵 التحكم في الأسلاك</h3>
+   <div class="wire-controls">
+    <label for="wireStyle">شكل السلك:</label>
+    <select id="wireStyle">
+     <option value="auto">تلقائي ذكي</option>
+     <option value="straight">مستقيم</option>
+     <option value="orthogonal">زوايا 90°</option>
+     <option value="curve">منحني</option>
+     <option value="custom">مسار يدوي</option>
+    </select>
+
+    <label for="wireColor">اللون:</label>
+    <input type="color" id="wireColor" value="#eac46e">
+
+    <label for="wireWidth">السمك:</label>
+    <input type="range" id="wireWidth" min="2" max="10" value="4">
+    <span id="wireWidthValue">4 px</span>
+   </div>
+
+   <div class="wire-tools-row">
+    <button id="applyWireBtn" class="primary">تطبيق على السلك المحدد</button>
+    <button id="manualBtn">✏️ إضافة نقاط للمسار</button>
+    <button id="finishManualBtn">✔ إنهاء الرسم اليدوي</button>
+    <button id="clearPointsBtn">مسح نقاط المسار</button>
+   </div>
+
+   <p class="wire-help" id="wireHelp">
+    حدد أي سلك من الطاولة لتغيير شكله ولونه وسمكه. اختر «مسار يدوي»، ثم اضغط على أماكن الطاولة لإضافة نقاط يمر بها السلك. يمكنك سحب النقاط البيضاء لتحريكها.
+   </p>
+  </section>
+
+  <div class="settings" id="settings">
+   <h3 id="settingsTitle">إعدادات الجهاز</h3>
+   <div id="settingsBody"></div>
+  </div>
+
+  <div class="readings">
+   <div class="reading"><small>شدة التيار الكلي</small><strong id="current">0 A</strong></div>
+   <div class="reading"><small>فرق الجهد</small><strong id="voltage">0 V</strong></div>
+   <div class="reading"><small>المقاومة المكافئة</small><strong id="resistance">— Ω</strong></div>
+   <div class="reading"><small>القدرة المستهلكة</small><strong id="power">0 W</strong></div>
+  </div>
+
+  <div class="status" id="status">أضف الأجهزة، ثم وصّل أطرافها لتكوين دائرة كهربائية.</div>
+  <p class="hint">الأميتر يوصل على التوالي، والفولتميتر على التوازي. هذه محاكاة تعليمية لدوائر DC وليست تعليمات لتوصيل أجهزة كهربائية حقيقية.</p>
+ </main>
+</div>
+
+<script>
+const lab=document.getElementById("lab");
+const wireLayer=document.getElementById("wireLayer");
+const toolsBox=document.getElementById("tools");
+const settings=document.getElementById("settings");
+const settingsBody=document.getElementById("settingsBody");
+const settingsTitle=document.getElementById("settingsTitle");
+const statusBox=document.getElementById("status");
+
+const wireStyle=document.getElementById("wireStyle");
+const wireColor=document.getElementById("wireColor");
+const wireWidth=document.getElementById("wireWidth");
+const wireWidthValue=document.getElementById("wireWidthValue");
+const wireHelp=document.getElementById("wireHelp");
+
+let devices=[];
+let wires=[];
+let selected=null;
+let selectedWire=null;
+let pendingTerminal=null;
+let running=false;
+let nextId=1;
+let manualMode=false;
+
+const definitions={
+ battery:{name:"بطارية",value:12,unit:"V"},
+ resistor:{name:"مقاومة",value:100,unit:"Ω"},
+ rheostat:{name:"ريوستات",value:50,unit:"Ω"},
+ lamp:{name:"مصباح",value:20,unit:"Ω"},
+ switch:{name:"مفتاح"},
+ ammeter:{name:"أميتر"},
+ voltmeter:{name:"فولتميتر"},
+ capacitor:{name:"مكثف",value:100,unit:"µF"},
+ inductor:{name:"ملف حث",value:10,unit:"mH"},
+ fuse:{name:"مصهر",value:0.05,unit:"Ω"}
+};
+
+function svg(content){
+ return `<svg viewBox="0 0 110 65" xmlns="http://www.w3.org/2000/svg">${content}</svg>`;
+}
+
+function getSymbol(d){
+ const gold="#eac46e",white="#dce5f2";
+
+ if(d.type==="resistor"||d.type==="rheostat"){
+  let shape=`<path d="M2 32 H14 L23 15 L35 49 L47 15 L59 49 L71 15 L83 49 L95 32 H108" stroke="${gold}" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
+  if(d.type==="rheostat")shape+=`<path d="M76 2 L54 24 M54 24 L56 14 M54 24 L65 22" stroke="#ff7777" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+  return svg(shape);
+ }
+
+ if(d.type==="switch"){
+  const color=d.closed?"#43e69b":"#ff6262";
+  const arm=d.closed?"M28 35 L82 35":"M28 35 L72 8";
+  return svg(`<path d="M2 35 H28 M82 35 H108" stroke="${white}" stroke-width="4" fill="none"/><circle cx="28" cy="35" r="6" fill="${gold}" stroke="#fff" stroke-width="1.5"/><circle cx="82" cy="35" r="6" fill="${gold}" stroke="#fff" stroke-width="1.5"/><path d="${arm}" stroke="${color}" stroke-width="6" stroke-linecap="round" fill="none"/><text x="55" y="61" text-anchor="middle" font-size="10" fill="${color}">${d.closed?"مغلق":"مفتوح"}</text>`);
+ }
+
+ if(d.type==="battery")return svg(`<path d="M2 32 H39 M39 12 V52 M55 22 V42 M55 32 H108" stroke="${white}" stroke-width="4" fill="none"/><text x="25" y="10" fill="#ff7777" font-size="12">+</text><text x="59" y="17" fill="#65b9ff" font-size="12">−</text>`);
+
+ if(d.type==="lamp"){
+  const glow=d.lit?"#ffe77a":"#526174";
+  const light=d.lit?"#fff2a8":"#9aa8ba";
+  return svg(`<circle cx="55" cy="28" r="20" fill="${glow}" stroke="${light}" stroke-width="3"/><path d="M45 28 L65 28 M55 18 V38 M47 48 V55 H63 V48" stroke="#eee" stroke-width="3" fill="none"/>`);
+ }
+
+ if(d.type==="ammeter"||d.type==="voltmeter"){
+  const letter=d.type==="ammeter"?"A":"V";
+  return svg(`<circle cx="55" cy="29" r="25" fill="#edf2fa" stroke="#34445b" stroke-width="3"/><text x="55" y="37" text-anchor="middle" fill="#152236" font-size="24" font-weight="bold">${letter}</text>`);
+ }
+
+ if(d.type==="capacitor")return svg(`<path d="M2 32 H48 M48 12 V52 M62 12 V52 M62 32 H108" stroke="${gold}" stroke-width="4" fill="none"/>`);
+ if(d.type==="inductor")return svg(`<path d="M2 35 H15 C15 5 35 5 35 35 C35 5 55 5 55 35 C55 5 75 5 75 35 H108" stroke="${gold}" stroke-width="4" fill="none"/>`);
+ if(d.type==="fuse")return svg(`<path d="M2 32 H27 L35 22 L43 42 L51 22 L59 42 L67 22 L75 32 H108" stroke="${gold}" stroke-width="4" fill="none"/>`);
+ return "";
+}
+
+function meterText(d){
+ if(!d.hasReading)return "بانتظار التحليل";
+ const value=d.type==="ammeter"?d.measuredI:d.measuredV;
+ return `${format(Math.abs(value))} ${d.type==="ammeter"?"A":"V"}`;
+}
+
+function createTool(type){
+ const d=definitions[type];
+ const el=document.createElement("div");
+ el.className="tool";
+ el.innerHTML=`<div class="preview">${getSymbol({type,closed:false,lit:false})}</div><span>${d.name}</span>`;
+
+ let ghost=null,startX=0,startY=0,dragging=false;
+
+ el.addEventListener("pointerdown",e=>{
+  if(e.button!==0)return;
+  e.preventDefault();
+  startX=e.clientX;startY=e.clientY;dragging=false;
+  try{el.setPointerCapture(e.pointerId)}catch(error){}
+
+  function move(ev){
+   if(!dragging&&Math.hypot(ev.clientX-startX,ev.clientY-startY)>5){
+    dragging=true;
+    ghost=document.createElement("div");
+    ghost.className="drag-ghost";
+    ghost.innerHTML=el.innerHTML;
+    document.body.appendChild(ghost);
+   }
+   if(ghost){ghost.style.left=ev.clientX+"px";ghost.style.top=ev.clientY+"px"}
+  }
+
+  function cleanup(){
+   el.removeEventListener("pointermove",move);
+   el.removeEventListener("pointerup",finish);
+   el.removeEventListener("pointercancel",cancel);
+   if(ghost){ghost.remove();ghost=null}
+   dragging=false;
+  }
+
+  function finish(ev){
+   if(ghost&&dragging){
+    const rect=lab.getBoundingClientRect();
+    const inside=ev.clientX>=rect.left&&ev.clientX<=rect.right&&ev.clientY>=rect.top&&ev.clientY<=rect.bottom;
+    if(inside){
+     const x=Math.max(55,Math.min(lab.clientWidth-55,ev.clientX-rect.left));
+     const y=Math.max(60,Math.min(lab.clientHeight-60,ev.clientY-rect.top));
+     addDevice(type,x,y);
+    }
+   }
+   cleanup();
+  }
+  function cancel(){cleanup()}
+  el.addEventListener("pointermove",move);
+  el.addEventListener("pointerup",finish);
+  el.addEventListener("pointercancel",cancel);
+ });
+ toolsBox.appendChild(el);
+}
+Object.keys(definitions).forEach(createTool);
+
+function addDevice(type,x,y){
+ const d={
+  id:nextId++,type,
+  x:x??Math.min(70+devices.length*24,lab.clientWidth-75),
+  y:y??Math.min(110+devices.length*20,lab.clientHeight-75),
+  value:definitions[type].value??0,
+  closed:false,lit:false,measuredI:0,measuredV:0,hasReading:false
+ };
+ devices.push(d);
+ renderDevice(d);
+ selectDevice(d.id);
+ drawWires();
+ analyze();
+}
+
+function renderDevice(d){
+ document.getElementById("device-"+d.id)?.remove();
+ const el=document.createElement("div");
+ el.className="device";
+ if(d.type==="ammeter"||d.type==="voltmeter")el.classList.add("is-meter");
+ el.id="device-"+d.id;
+ el.style.left=d.x+"px";
+ el.style.top=d.y+"px";
+ el.innerHTML=`
+  <div class="symbol">${getSymbol(d)}</div>
+  <div class="device-name">${definitions[d.type].name}</div>
+  <div class="meter-screen">${meterText(d)}</div>
+  <div class="terminal a" data-device="${d.id}" data-terminal="a"></div>
+  <div class="terminal b" data-device="${d.id}" data-terminal="b"></div>
+ `;
+ lab.appendChild(el);
+
+ el.querySelectorAll(".terminal").forEach(t=>{
+  t.addEventListener("pointerdown",e=>e.stopPropagation());
+  t.addEventListener("click",e=>{
+   e.stopPropagation();
+   connectTerminal(d.id,t.dataset.terminal,t);
+  });
+ });
+
+ el.addEventListener("pointerdown",e=>{
+  if(e.target.classList.contains("terminal")||e.button!==0)return;
+  e.preventDefault();
+  const startX=e.clientX,startY=e.clientY,oldX=d.x,oldY=d.y;
+  try{el.setPointerCapture(e.pointerId)}catch(error){}
+
+  function move(ev){
+   d.x=Math.max(55,Math.min(lab.clientWidth-55,oldX+ev.clientX-startX));
+   d.y=Math.max(60,Math.min(lab.clientHeight-60,oldY+ev.clientY-startY));
+   el.style.left=d.x+"px";el.style.top=d.y+"px";
+   drawWires();
+  }
+  function up(){
+   el.removeEventListener("pointermove",move);
+   el.removeEventListener("pointerup",up);
+   el.removeEventListener("pointercancel",up);
+  }
+  el.addEventListener("pointermove",move);
+  el.addEventListener("pointerup",up);
+  el.addEventListener("pointercancel",up);
+  selectDevice(d.id);
+ });
+ el.addEventListener("click",()=>selectDevice(d.id));
+}
+
+function selectDevice(id){
+ selected=devices.find(d=>d.id===id);
+ if(!selected)return;
+ selectedWire=null;
+ document.querySelectorAll(".device").forEach(e=>e.classList.remove("selected"));
+ document.getElementById("device-"+id)?.classList.add("selected");
+ showSettings(selected);
+ updateWirePanel();
+}
+
+function connectTerminal(id,side,element){
+ if(!pendingTerminal){
+  pendingTerminal={id,side};
+  element.classList.add("waiting");
+  setStatus("اختر الطرف الآخر لإكمال توصيل السلك.");
+  return;
+ }
+ if(pendingTerminal.id===id&&pendingTerminal.side===side){
+  pendingTerminal=null;
+  document.querySelectorAll(".terminal").forEach(t=>t.classList.remove("waiting"));
+  setStatus("تم إلغاء اختيار الطرف.");
+  return;
+ }
+
+ const exists=wires.some(w=>
+  (w.a.id===pendingTerminal.id&&w.a.side===pendingTerminal.side&&w.b.id===id&&w.b.side===side)||
+  (w.b.id===pendingTerminal.id&&w.b.side===side&&w.a.id===id&&w.a.side===pendingTerminal.side)
+ );
+
+ if(!exists){
+  wires.push({
+   a:{...pendingTerminal},b:{id,side},
+   style:"auto",color:"#eac46e",width:4,points:[]
+  });
+  selectedWire=wires.length-1;
+  selected=null;
+ }
+ pendingTerminal=null;
+ document.querySelectorAll(".terminal").forEach(t=>t.classList.remove("waiting"));
+ drawWires();
+ updateWirePanel();
+ analyze();
+}
+
+function terminalPosition(point){
+ const d=devices.find(x=>x.id===point.id);
+ if(!d)return{x:0,y:0};
+ return{x:d.x+(point.side==="a"?-52:52),y:d.y+2};
+}
+
+function getWirePath(w){
+ const a=terminalPosition(w.a),b=terminalPosition(w.b);
+ const pts=(w.points||[]).map(p=>({x:p.x,y:p.y}));
+ const style=w.style||"auto";
+
+ if(style==="straight")return `M ${a.x} ${a.y} L ${b.x} ${b.y}`;
+
+ if(style==="curve"){
+  const dx=b.x-a.x,dy=b.y-a.y;
+  const bend=Math.max(35,Math.min(100,Math.abs(dx)*.25+Math.abs(dy)*.15));
+  const sign=dx>=0?1:-1;
+  return `M ${a.x} ${a.y} C ${a.x+dx*.35} ${a.y-sign*bend}, ${b.x-dx*.35} ${b.y-sign*bend}, ${b.x} ${b.y}`;
+ }
+
+ if(style==="custom"&&pts.length){
+  return `M ${a.x} ${a.y} `+pts.map(p=>`L ${p.x} ${p.y}`).join(" ")+` L ${b.x} ${b.y}`;
+ }
+
+ if(style==="auto"){
+  const dx=Math.abs(b.x-a.x);
+  const dy=Math.abs(b.y-a.y);
+  if(dx>dy){
+   const mid=(a.x+b.x)/2;
+   return `M ${a.x} ${a.y} L ${mid} ${a.y} L ${mid} ${b.y} L ${b.x} ${b.y}`;
+  }
+  const mid=(a.y+b.y)/2;
+  return `M ${a.x} ${a.y} L ${a.x} ${mid} L ${b.x} ${mid} L ${b.x} ${b.y}`;
+ }
+
+ const points=[a,...pts,b];
+ let path=`M ${points[0].x} ${points[0].y}`;
+ for(let i=1;i<points.length;i++){
+  const prev=points[i-1],cur=points[i];
+  if(i===1||i===points.length-1){
+   const midX=(prev.x+cur.x)/2;
+   path+=` L ${midX} ${prev.y} L ${midX} ${cur.y} L ${cur.x} ${cur.y}`;
+  }else{
+   path+=` L ${cur.x} ${cur.y}`;
+  }
+ }
+ return path;
+}
+
+function svgElement(name,attrs){
+ const el=document.createElementNS("http://www.w3.org/2000/svg",name);
+ Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k,v));
+ return el;
+}
+
+function drawWires(){
+ wireLayer.setAttribute("viewBox",`0 0 ${lab.clientWidth} ${lab.clientHeight}`);
+ wireLayer.innerHTML="";
+
+ wires.forEach((w,i)=>{
+  const pathData=getWirePath(w);
+  const hit=svgElement("path",{d:pathData,class:"wire-hit"});
+  hit.addEventListener("click",e=>selectWire(i,e));
+  wireLayer.appendChild(hit);
+
+  const path=svgElement("path",{
+   d:pathData,
+   class:"wire"+(selectedWire===i?" selected":""),
+   stroke:w.color||"#eac46e",
+   "stroke-width":w.width||4
+  });
+  wireLayer.appendChild(path);
+
+  if(selectedWire===i){
+   const a=terminalPosition(w.a),b=terminalPosition(w.b);
+   [a,b].forEach(p=>wireLayer.appendChild(svgElement("circle",{
+    cx:p.x,cy:p.y,r:5,class:"endpoint-dot"
+   })));
+
+   (w.points||[]).forEach((p,index)=>{
+    const handle=svgElement("circle",{
+     cx:p.x,cy:p.y,r:8,class:"waypoint",
+     "data-point":index
+    });
+    handle.addEventListener("pointerdown",e=>{
+     e.stopPropagation();
+     e.preventDefault();
+     const move=ev=>{
+      const rect=lab.getBoundingClientRect();
+      p.x=Math.max(5,Math.min(lab.clientWidth-5,ev.clientX-rect.left));
+      p.y=Math.max(5,Math.min(lab.clientHeight-5,ev.clientY-rect.top));
+      drawWires();
+     };
+     const up=()=>{
+      window.removeEventListener("pointermove",move);
+      window.removeEventListener("pointerup",up);
+      window.removeEventListener("pointercancel",up);
+     };
+     window.addEventListener("pointermove",move);
+     window.addEventListener("pointerup",up);
+     window.addEventListener("pointercancel",up);
+    });
+    handle.addEventListener("dblclick",()=>{
+     w.points.splice(index,1);
+     drawWires();
+    });
+    wireLayer.appendChild(handle);
+   });
+  }
+ });
+}
+
+function selectWire(i,e){
+ if(e)e.stopPropagation();
+ selectedWire=i;
+ selected=null;
+ settings.style.display="none";
+ document.querySelectorAll(".device").forEach(el=>el.classList.remove("selected"));
+ updateWirePanel();
+ drawWires();
+ setStatus("تم تحديد السلك. يمكنك الآن تعديل شكله ولونه وسمكه.");
+}
+
+function updateWirePanel(){
+ const w=wires[selectedWire];
+ const disabled=!w;
+ [wireStyle,wireColor,wireWidth].forEach(el=>el.disabled=disabled);
+ document.getElementById("applyWireBtn").disabled=disabled;
+ document.getElementById("manualBtn").disabled=disabled;
+ document.getElementById("clearPointsBtn").disabled=disabled;
+
+ if(!w){
+  wireHelp.textContent="حدد سلكًا من الطاولة لتعديل شكله ولونه وسمكه. لإنشاء سلك، اضغط على طرف جهاز ثم الطرف الآخر.";
+  return;
+ }
+ wireStyle.value=w.style||"auto";
+ wireColor.value=w.color||"#eac46e";
+ wireWidth.value=w.width||4;
+ wireWidthValue.textContent=(w.width||4)+" px";
+ wireHelp.textContent=`السلك المحدد: ${selectedWire+1} — عدد نقاط المسار: ${(w.points||[]).length}. اسحب النقاط البيضاء لتحريكها، أو اضغط مرتين على نقطة لحذفها.`;
+}
+
+function applyWireSettings(){
+ const w=wires[selectedWire];
+ if(!w){setStatus("حدد سلكًا أولًا.");return}
+ w.style=wireStyle.value;
+ w.color=wireColor.value;
+ w.width=Number(wireWidth.value);
+ if(w.style!=="custom")w.points=[];
+ if(w.style==="custom"&&!w.points)w.points=[];
+ drawWires();
+ updateWirePanel();
+ setStatus("تم تطبيق إعدادات السلك.");
+}
+
+function deleteSelectedWire(){
+ if(selectedWire===null||!wires[selectedWire]){
+  setStatus("حدد سلكًا من الطاولة أولًا.");
+  return;
+ }
+ wires.splice(selectedWire,1);
+ selectedWire=null;
+ manualMode=false;
+ updateWirePanel();
+ drawWires();
+ analyze();
+ setStatus("تم حذف السلك المحدد.");
+}
+
+function showSettings(d){
+ settings.style.display="block";
+ settingsTitle.textContent="إعدادات: "+definitions[d.type].name;
+
+ if(d.type==="switch"){
+  settingsBody.innerHTML=`
+   <div class="setting-row">
+    <label>حالة المفتاح</label>
+    <button class="${d.closed?"primary":"danger"}" id="switchToggle">${d.closed?"● مغلق":"○ مفتوح"}</button>
+   </div>
+   <p class="hint">عند غلق المفتاح يكتمل مسار التوصيل بين طرفيه.</p>`;
+  document.getElementById("switchToggle").onclick=()=>{
+   d.closed=!d.closed;
+   renderDevice(d);
+   selectDevice(d.id);
+   analyze();
+  };
+ }else if(d.type==="ammeter"||d.type==="voltmeter"){
+  const isA=d.type==="ammeter";
+  const unit=isA?"A":"V";
+  settingsBody.innerHTML=`
+   <div class="meter-info">
+    <div>قراءة ${isA?"شدة التيار":"فرق الجهد"}:</div>
+    <strong>${d.hasReading?format(Math.abs(isA?d.measuredI:d.measuredV))+" "+unit:"بانتظار تشغيل التحليل"}</strong>
+   </div>
+   <p class="hint">${isA?"يوصل الأميتر على التوالي لقياس شدة التيار.":"يوصل الفولتميتر على التوازي لقياس فرق الجهد."}</p>`;
+ }else if(d.value!==undefined){
+  const unit=definitions[d.type].unit||"";
+  settingsBody.innerHTML=`
+   <div class="setting-row">
+    <label>القيمة (${unit})</label>
+    <input type="number" id="deviceValue" min="0" step="any" value="${d.value}">
+   </div>
+   <div class="setting-row">
+    <label>تغيير سريع</label>
+    <input type="range" id="deviceRange" min="0" max="${Math.max(100,d.value*3)}" step="any" value="${d.value}">
+   </div>`;
+  const number=document.getElementById("deviceValue");
+  const range=document.getElementById("deviceRange");
+  number.addEventListener("input",()=>{
+   d.value=Math.max(0,Number(number.value)||0);
+   range.value=d.value;
+   analyze();
+  });
+  range.addEventListener("input",()=>{
+   d.value=Number(range.value);
+   number.value=d.value;
+   analyze();
+  });
+ }else{
+  settingsBody.innerHTML=`<p class="hint">هذا الجهاز لا يحتاج إلى قيمة قابلة للتعديل حاليًا.</p>`;
+ }
+}
+
+function deleteSelected(){
+ if(!selected){setStatus("حدد جهازًا أولًا لحذفه.");return}
+ const id=selected.id;
+ devices=devices.filter(d=>d.id!==id);
+ wires=wires.filter(w=>w.a.id!==id&&w.b.id!==id);
+ document.getElementById("device-"+id)?.remove();
+ selected=null;
+ selectedWire=null;
+ settings.style.display="none";
+ updateWirePanel();
+ drawWires();
+ analyze();
+ setStatus("تم حذف الجهاز وأسلاكه المتصلة.");
+}
+
+function resetLab(){
+ devices=[];wires=[];
+ selected=null;selectedWire=null;pendingTerminal=null;
+ running=false;nextId=1;manualMode=false;
+ lab.querySelectorAll(".device").forEach(e=>e.remove());
+ wireLayer.innerHTML="";
+ settings.style.display="none";
+ updateWirePanel();
+ document.getElementById("current").textContent="0 A";
+ document.getElementById("voltage").textContent="0 V";
+ document.getElementById("resistance").textContent="— Ω";
+ document.getElementById("power").textContent="0 W";
+ setStatus("تمت إعادة ضبط طاولة المعمل.");
+}
+
+function setStatus(message,type=""){
+ statusBox.textContent=message;
+ statusBox.className="status "+type;
+}
+
+function resistance(d){
+ switch(d.type){
+  case "resistor":case "rheostat":case "lamp":
+   return Math.max(0.000001,Number(d.value)||0);
+  case "switch":return d.closed?0.02:1e12;
+  case "ammeter":return 0.01;
+  case "voltmeter":return 1e9;
+  case "capacitor":return 1e12;
+  case "inductor":return 1e-6;
+  case "fuse":return 0.05;
+  default:return 1e12;
+ }
+}
+
+function analyze(){
+ if(!running){
+  devices.forEach(d=>{
+   if(d.type==="lamp")d.lit=false;
+   if(d.type==="ammeter"||d.type==="voltmeter")d.hasReading=false;
+   refreshSymbol(d);
+  });
+  return;
+ }
+
+ const terminals=[];
+ devices.forEach(d=>terminals.push(d.id+":a",d.id+":b"));
+ if(!terminals.length){setStatus("أضف أجهزة إلى المعمل.");return}
+
+ const parent={};
+ terminals.forEach(t=>parent[t]=t);
+ function find(x){if(parent[x]!==x)parent[x]=find(parent[x]);return parent[x]}
+ function union(a,b){a=find(a);b=find(b);if(a!==b)parent[b]=a}
+ wires.forEach(w=>union(w.a.id+":"+w.a.side,w.b.id+":"+w.b.side));
+
+ const nodeNames=[...new Set(terminals.map(find))];
+ const nodeIndex={};
+ nodeNames.forEach((n,i)=>nodeIndex[n]=i);
+ const branches=devices.map(d=>({d,a:nodeIndex[find(d.id+":a")],b:nodeIndex[find(d.id+":b")]}));
+ const adjacency=nodeNames.map(()=>[]);
+ branches.forEach(br=>{adjacency[br.a].push(br.b);adjacency[br.b].push(br.a)});
+
+ const groups=[],visited=new Set();
+ for(let i=0;i<nodeNames.length;i++){
+  if(visited.has(i))continue;
+  const group=[],stack=[i];visited.add(i);
+  while(stack.length){
+   const n=stack.pop();group.push(n);
+   adjacency[n].forEach(m=>{if(!visited.has(m)){visited.add(m);stack.push(m)}});
+  }
+  groups.push(group);
+ }
+
+ let totalPower=0,totalVoltage=0,sourceCount=0,firstSourceCurrent=null;
+ branches.forEach(br=>{
+  br.d.measuredI=0;br.d.measuredV=0;br.d.hasReading=false;
+  if(br.d.type==="lamp")br.d.lit=false;
+ });
+
+ try{
+  for(const group of groups){
+   const groupSet=new Set(group);
+   const groupBranches=branches.filter(br=>groupSet.has(br.a)&&groupSet.has(br.b));
+   const sources=groupBranches.filter(br=>br.d.type==="battery");
+   if(!sources.length)continue;
+
+   const ground=group[0],variable={};
+   let count=0;
+   group.forEach(n=>{if(n!==ground)variable[n]=count++});
+   const sourceVariable={};
+   sources.forEach(br=>sourceVariable[br.d.id]=count++);
+
+   const A=Array.from({length:count},()=>Array(count).fill(0));
+   const B=Array(count).fill(0);
+
+   function stampG(a,b,g){
+    const ia=variable[a],ib=variable[b];
+    if(ia!==undefined)A[ia][ia]+=g;
+    if(ib!==undefined)A[ib][ib]+=g;
+    if(ia!==undefined&&ib!==undefined){A[ia][ib]-=g;A[ib][ia]-=g}
+   }
+
+   groupBranches.forEach(br=>{
+    const d=br.d;
+    if(d.type==="battery"){
+     const k=sourceVariable[d.id],ia=variable[br.a],ib=variable[br.b];
+     if(ia!==undefined){A[ia][k]+=1;A[k][ia]+=1}
+     if(ib!==undefined){A[ib][k]-=1;A[k][ib]-=1}
+     B[k]=Number(d.value)||0;
+    }else stampG(br.a,br.b,1/resistance(d));
+   });
+
+   const solution=gaussian(A,B);
+   function nodeV(n){return n===ground?0:solution[variable[n]]}
+
+   groupBranches.forEach(br=>{
+    const d=br.d;
+    const voltage=nodeV(br.a)-nodeV(br.b);
+    const current=d.type==="battery"?solution[sourceVariable[d.id]]:voltage/resistance(d);
+    d.measuredV=voltage;d.measuredI=current;d.hasReading=true;
+    if(d.type==="lamp")d.lit=Math.abs(current)>0.001;
+    if(["resistor","rheostat","lamp","fuse"].includes(d.type))totalPower+=voltage*current;
+    if(d.type==="battery"){
+     sourceCount++;
+     if(sourceCount===1)totalVoltage=Math.abs(Number(d.value)||0);
+     if(firstSourceCurrent===null)firstSourceCurrent=Math.abs(current);
+    }
+   });
+  }
+ }catch(error){
+  devices.forEach(d=>{d.hasReading=false;d.lit=false;refreshSymbol(d)});
+  setStatus("تعذر حل الدائرة. راجع التوصيلات وتأكد من عدم وجود مصادر جهد متعارضة أو قصر كهربائي في النموذج.","bad");
+  return;
+ }
+
+ devices.forEach(refreshSymbol);
+ const current=firstSourceCurrent??0;
+ document.getElementById("current").textContent=format(current)+" A";
+ document.getElementById("voltage").textContent=format(totalVoltage)+" V";
+ document.getElementById("resistance").textContent=sourceCount===1&&current>1e-10?format(totalVoltage/current)+" Ω":"— Ω";
+ document.getElementById("power").textContent=format(Math.max(0,totalPower))+" W";
+
+ if(selected&&(selected.type==="ammeter"||selected.type==="voltmeter"))showSettings(selected);
+ if(sourceCount===0)setStatus("لا توجد بطارية في الدائرة. أضف مصدر جهد لتشغيل التحليل.");
+ else setStatus("تم تحليل الدائرة. تم تحديث قراءات الأجهزة المتصلة.","good");
+}
+
+function gaussian(matrix,vector){
+ const n=vector.length;
+ if(n===0)return [];
+ const a=matrix.map((row,i)=>[...row,vector[i]]);
+ for(let col=0;col<n;col++){
+  let pivot=col;
+  for(let row=col+1;row<n;row++)if(Math.abs(a[row][col])>Math.abs(a[pivot][col]))pivot=row;
+  if(Math.abs(a[pivot][col])<1e-14)throw Error("Singular matrix");
+  [a[col],a[pivot]]=[a[pivot],a[col]];
+  const div=a[col][col];
+  for(let j=col;j<=n;j++)a[col][j]/=div;
+  for(let row=0;row<n;row++){
+   if(row===col)continue;
+   const factor=a[row][col];
+   for(let j=col;j<=n;j++)a[row][j]-=factor*a[col][j];
+  }
+ }
+ return a.map(row=>row[n]);
+}
+
+function format(n){
+ if(!Number.isFinite(n))return "—";
+ if(Math.abs(n)<0.000001)return "0";
+ return Number(n.toPrecision(4)).toString();
+}
+
+function refreshSymbol(d){
+ const el=document.getElementById("device-"+d.id);
+ if(!el)return;
+ const symbol=el.querySelector(".symbol");
+ const screen=el.querySelector(".meter-screen");
+ if(symbol)symbol.innerHTML=getSymbol(d);
+ if(screen)screen.textContent=meterText(d);
+}
+
+/* أدوات تعديل الأسلاك */
+wireStyle.addEventListener("change",()=>{
+ const w=wires[selectedWire];
+ if(!w)return;
+ w.style=wireStyle.value;
+ if(w.style!=="custom")w.points=[];
+ drawWires();
+ updateWirePanel();
+});
+
+wireWidth.addEventListener("input",()=>{
+ wireWidthValue.textContent=wireWidth.value+" px";
+});
+
+document.getElementById("applyWireBtn").onclick=applyWireSettings;
+
+document.getElementById("manualBtn").onclick=()=>{
+ const w=wires[selectedWire];
+ if(!w){setStatus("حدد سلكًا أولًا.");return}
+ w.style="custom";
+ wireStyle.value="custom";
+ manualMode=true;
+ document.getElementById("manualBtn").classList.add("active");
+ wireHelp.textContent="وضع الرسم اليدوي نشط: اضغط على أماكن مختلفة من الطاولة لإضافة نقاط يمر بها السلك. اضغط إنهاء الرسم عند الانتهاء.";
+ setStatus("الرسم اليدوي نشط. اضغط على الطاولة لإضافة نقاط المسار.","good");
+ drawWires();
+};
+
+document.getElementById("finishManualBtn").onclick=()=>{
+ manualMode=false;
+ document.getElementById("manualBtn").classList.remove("active");
+ setStatus("تم إنهاء رسم مسار السلك.");
+ updateWirePanel();
+};
+
+document.getElementById("clearPointsBtn").onclick=()=>{
+ const w=wires[selectedWire];
+ if(!w){setStatus("حدد سلكًا أولًا.");return}
+ w.points=[];
+ w.style="orthogonal";
+ wireStyle.value="orthogonal";
+ manualMode=false;
+ document.getElementById("manualBtn").classList.remove("active");
+ drawWires();
+ updateWirePanel();
+ setStatus("تم مسح نقاط المسار.");
+};
+
+lab.addEventListener("click",e=>{
+ if(!manualMode||selectedWire===null)return;
+ if(e.target.closest(".device"))return;
+ const rect=lab.getBoundingClientRect();
+ const w=wires[selectedWire];
+ if(!w)return;
+ w.points.push({
+  x:Math.max(5,Math.min(lab.clientWidth-5,e.clientX-rect.left)),
+  y:Math.max(5,Math.min(lab.clientHeight-5,e.clientY-rect.top))
+ });
+ w.style="custom";
+ wireStyle.value="custom";
+ drawWires();
+ updateWirePanel();
+});
+
+document.getElementById("runBtn").onclick=()=>{
+ running=true;
+ analyze();
+};
+
+document.getElementById("stopBtn").onclick=()=>{
+ running=false;
+ devices.forEach(d=>{
+  d.lit=false;
+  if(d.type==="ammeter"||d.type==="voltmeter")d.hasReading=false;
+  refreshSymbol(d);
+ });
+ if(selected&&(selected.type==="ammeter"||selected.type==="voltmeter"))showSettings(selected);
+ setStatus("تم إيقاف التحليل.");
+};
+
+document.getElementById("resetBtn").onclick=resetLab;
+document.getElementById("deleteBtn").onclick=deleteSelected;
+document.getElementById("deleteWireBtn").onclick=deleteSelectedWire;
+
+window.addEventListener("resize",()=>{
+ devices.forEach(d=>{
+  d.x=Math.min(d.x,lab.clientWidth-55);
+  d.y=Math.min(d.y,lab.clientHeight-60);
+  const el=document.getElementById("device-"+d.id);
+  if(el){el.style.left=d.x+"px";el.style.top=d.y+"px"}
+ });
+ wires.forEach(w=>{
+  (w.points||[]).forEach(p=>{
+   p.x=Math.min(p.x,lab.clientWidth-5);
+   p.y=Math.min(p.y,lab.clientHeight-5);
+  });
+ });
+ drawWires();
+});
+</script>
+</body>
+</html>
