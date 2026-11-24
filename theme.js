@@ -33,11 +33,11 @@ function updateThemeButton() {
         document.body.classList.contains("light-mode")
     ) {
 
-        button.textContent = "☀️";
+        button.textContent = "🌙";
 
     } else {
 
-        button.textContent = "🌙";
+        button.textContent = "☀️";
 
     }
 }
