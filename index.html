@@ -55,22 +55,6 @@
             color: gold;
         }
 
-        .theme-button {
-            padding: 8px 12px;
-            margin-right: 10px;
-            border: 1px solid #555;
-            border-radius: 50%;
-            background: #222;
-            color: white;
-            font-size: 20px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .theme-button:hover {
-            transform: scale(1.1);
-        }
-
         .hero {
             min-height: 90vh;
             display: flex;
@@ -100,12 +84,14 @@
         }
 
         .main-button {
+            display: inline-block;
             padding: 16px 35px;
             margin-top: 20px;
             border: none;
             border-radius: 30px;
             background: gold;
             color: black;
+            text-decoration: none;
             font-size: 18px;
             font-weight: bold;
             cursor: pointer;
@@ -190,36 +176,6 @@
             line-height: 1.7;
         }
 
-        .contact {
-            background: #151515;
-        }
-
-        .contact input,
-        .contact textarea {
-            width: 90%;
-            max-width: 600px;
-            display: block;
-            margin: 15px auto;
-            padding: 15px;
-            background: #222;
-            color: white;
-            border: 1px solid #444;
-            border-radius: 10px;
-            font-size: 16px;
-        }
-
-        .contact textarea {
-            height: 130px;
-            resize: none;
-        }
-
-        .contact-status {
-            margin: 15px auto;
-            max-width: 600px;
-            font-size: 16px;
-            line-height: 1.7;
-        }
-
         footer {
             padding: 30px;
             text-align: center;
@@ -265,8 +221,7 @@
             color: #444;
         }
 
-        body.light-mode .about,
-        body.light-mode .contact {
+        body.light-mode .about {
             background: #e9e9e9;
         }
 
@@ -281,19 +236,6 @@
 
         body.light-mode .card p {
             color: #444;
-        }
-
-        body.light-mode .theme-button {
-            background: #eee;
-            color: #111;
-            border-color: #ccc;
-        }
-
-        body.light-mode .contact input,
-        body.light-mode .contact textarea {
-            background: white;
-            color: #111;
-            border-color: #ccc;
         }
 
         body.light-mode footer {
@@ -339,88 +281,87 @@
         <h2>موقعي 🚀</h2>
 
         <nav>
-            <a href="#home" data-i18n="home">الرئيسية</a>
-            <a href="#about" data-i18n="about">عني</a>
-            <a href="#services" data-i18n="services">الخدمات</a>
-            <a href="setting.html" class="settings-button">⚙️</a>
+            <a href="#home">الرئيسية</a>
+            <a href="#about">عني</a>
+            <a href="#services">الخدمات</a>
+            <a href="setting.html">⚙️</a>
         </nav>
     </header>
 
     <section class="hero" id="home">
+
         <h1>
-            <span data-i18n="welcome">أهلاً بيك في</span>
-            <span data-i18n="mySite">موقعي</span>
+            <span>أهلاً بيك في</span>
+            <span>موقعي</span>
         </h1>
 
-        <p data-i18n="intro">
+        <p>
             ده أول موقع بعمله من الصفر،
             ودي مجرد البداية 🚀
         </p>
 
-        <a href="#physics" class="main-button" data-i18n="start">
+        <a href="#physics" class="main-button">
             ابدأ الآن
         </a>
+
     </section>
 
     <section class="about" id="about">
-        <h2 data-i18n="whoAmI">من أنا؟</h2>
+
+        <h2>من أنا؟</h2>
 
         <img
             src="profile.jpg"
             alt="صورتي الشخصية"
-            data-i18n-alt="profileAlt"
             class="profile-image">
 
-        <p data-i18n="about Text">
-            أهلاً بيك في موقعي. انا moazwaleed المطور الرسمي للموقع
-
-            ولسه هنطوره مع بعض ونضيف له حاجات أكتر انا ضيفت فيه شرح مواد 3 ثانوى علي قد مربنا اقدرني يلا ابدئ رحلتك في المذاكرة مستني اي. 🔥
+        <p>
+            أهلاً بيك في موقعي. انا moazwaleed المطور الرسمي للموقع.
+            ولسه هنطوره مع بعض ونضيف له حاجات أكتر.
+            أنا ضيفت فيه شرح مواد 3 ثانوي على قد ما أقدر.
+            يلا ابدأ رحلتك في المذاكرة! 🔥
         </p>
+
     </section>
 
     <section id="services">
-        <h2 data-i18n="whatOffer">ماذا أقدم؟</h2>
+
+        <h2>ماذا أقدم؟</h2>
 
         <div class="cards">
 
             <div class="card">
                 <div class="icon">💻</div>
 
-                <h3 data-i18n="webDesign">
-                    شرح دروس لصف الثالث الثانوي
-                </h3>
+                <h3>شرح دروس الصف الثالث الثانوي</h3>
 
-                <p data-i18n="webDesignText">
-                    شرح مفصل+حل امثلة .
+                <p>
+                    شرح مفصل مع حل الأمثلة والمسائل.
                 </p>
             </div>
 
             <div class="card">
                 <div class="icon">🔣</div>
 
-                <h3 data-i18n="uiDesign">
-                    قوانين معادلات كل الدوس+ االتحويلات في الفيزياء
-                </h3>
+                <h3>قوانين ومعادلات الفيزياء</h3>
 
-                <p data-i18n="uiDesignText">
-                    هتلاقي كل قوانين المنهج بشكل مفصل والتحويلات.
+                <p>
+                    كل قوانين المنهج بشكل مفصل والتحويلات.
                 </p>
             </div>
 
             <div class="card">
                 <div class="icon">🚀</div>
 
-                <h3 data-i18n="development">
-                    تطوير المواقع
-                </h3>
+                <h3>تطوير المواقع</h3>
 
                 <p>
-                    إضافة خصائص وحركات
-                    وتطوير الموقع باستمرار.
+                    إضافة خصائص وحركات وتطوير الموقع باستمرار.
                 </p>
             </div>
 
         </div>
+
     </section>
 
     <section id="physics">
@@ -432,6 +373,7 @@
         <div class="cards">
 
             <div class="card">
+
                 <div class="icon">⚛️</div>
 
                 <h3>فيزياء</h3>
@@ -444,110 +386,33 @@
                 <a href="physics.html" class="main-button">
                     دخول الفيزياء
                 </a>
+
+            </div>
+
+            <div class="card">
+
+                <div class="icon">🔬</div>
+
+                <h3>المعمل الافتراضي</h3>
+
+                <p>
+                    نفّذ التجارب الفيزيائية بنفسك
+                    واكتشف القوانين من خلال المحاكاة.
+                </p>
+
+                <a href="lab.html" class="main-button">
+                    دخول المعمل
+                </a>
+
             </div>
 
         </div>
 
-        <!-- ===== التواصل ===== -->
-
+    </section>
 
     <footer>
         جميع الحقوق محفوظة © 2026
     </footer>
-
-    <!-- مكتبة Supabase -->
-
-    <script>
-
-        // بيانات مشروع Supabase
-
-        const SUPABASE_KEY = "sb_publishable_-1bBpyOnGR9nTmdeCfzg_w_XGqLZZrH";
-
-        const supabaseClient = window.supabase.createClient(
-            SUPABASE_URL,
-            SUPABASE_KEY
-        );
-
-        // إرسال الرسالة إلى قاعدة البيانات
-        const contactForm = document.getElementById("contactForm");
-
-        contactForm.addEventListener("submit", async function(event) {
-
-            event.preventDefault();
-
-            const name = document.getElementById("visitorName").value.trim();
-            const phone = document.getElementById("visitorPhone").value.trim();
-            const message = document.getElementById("visitorMessage").value.trim();
-
-            const status = document.getElementById("contactStatus");
-            const sendButton = document.getElementById("sendButton");
-
-            if (!name || !phone || !message) {
-                status.textContent = "من فضلك املأ جميع الخانات.";
-                status.style.color = "red";
-                return;
-            }
-
-            sendButton.disabled = true;
-            sendButton.textContent = "جاري الإرسال...";
-            status.textContent = "";
-
-            try {
-
-                const { error } = await supabaseClient
-                    .from("contact_messages")
-                    .insert([
-                        {
-                            name: name,
-                            phone: phone,
-                            message: message
-                        }
-                    ]);
-
-                if (error) {
-                    throw error;
-                }
-
-                status.textContent = "تم إرسال رسالتك بنجاح! ✅";
-                status.style.color = "green";
-
-                contactForm.reset();
-
-            } catch (error) {
-
-                console.error("Supabase error:", error);
-
-                status.textContent =
-                    "حصل خطأ أثناء إرسال الرسالة. حاول مرة تانية.";
-
-                status.style.color = "red";
-
-            } finally {
-
-                sendButton.disabled = false;
-                sendButton.textContent = "إرسال الرسالة";
-
-            }
-
-        });
-
-        // زر الوضع الليلي والفاتح
-        function toggleTheme() {
-
-            document.body.classList.toggle("light-mode");
-
-            const button = document.querySelector(".theme-button");
-
-            if (button) {
-                if (document.body.classList.contains("light-mode")) {
-                    button.textContent = "☀️";
-                } else {
-                    button.textContent = "🌙";
-                }
-            }
-        }
-
-    </script>
 
     <script src="theme.js"></script>
 
