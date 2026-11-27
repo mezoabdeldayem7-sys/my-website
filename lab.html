@@ -45,6 +45,7 @@ button.active{background:#176b50;border-color:#55dba6}
 
 .meter-screen{display:none;width:92px;min-height:24px;margin:1px auto 0;padding:4px 3px;background:#071b17;border:1px solid #36a879;border-radius:5px;color:#54f0ae;font-size:13px;font-weight:bold;text-align:center;direction:ltr;box-shadow:inset 0 0 8px #000;white-space:nowrap}
 .device.is-meter .meter-screen{display:block}
+.device.is-ohmmeter .meter-screen{border-color:#d7a94d;color:#f3cf78}
 
 .terminal{position:absolute;width:17px;height:17px;border-radius:50%;border:3px solid #fff;background:#d7a94d;top:43px;cursor:crosshair;z-index:8;box-shadow:0 0 7px #000}
 .terminal.a{left:-2px}
@@ -105,6 +106,56 @@ button.active{background:#176b50;border-color:#55dba6}
  .wire-controls{gap:7px}
  .wire-controls label{font-size:12px}
 }
+
+/* ===== مزامنة الوضع الفاتح مع إعدادات الموقع ===== */
+body.light-mode{
+  background:#f2f5fa;
+  color:#243247;
+}
+body.light-mode header{background:#ffffff;border-bottom-color:#c49b43}
+body.light-mode header h2{color:#9b7429}
+body.light-mode header p{color:#68778c}
+body.light-mode .sidebar{background:#e8edf5;border-left-color:#cbd5e2}
+body.light-mode .sidebar h3,
+body.light-mode .wire-panel h3,
+body.light-mode .settings h3{color:#9b7429}
+body.light-mode .tool{background:#ffffff;border-color:#cbd5e2;box-shadow:0 2px 7px #1b2a3a10}
+body.light-mode .tool span{color:#34445a}
+body.light-mode .drag-ghost{background:#ffffff;color:#243247}
+body.light-mode .lab{
+  background-color:#f8fafc;
+  background-image:linear-gradient(#dce4ef 1px,transparent 1px),linear-gradient(90deg,#dce4ef 1px,transparent 1px);
+  border-color:#cbd5e2;
+}
+body.light-mode .lab-title{color:#718096}
+body.light-mode .device-name{color:#26364c}
+body.light-mode button{background:#e2e9f2;color:#26364c;border-color:#b9c7d8}
+body.light-mode button.primary{background:#b88b35;color:#fff;border-color:#9b7429}
+body.light-mode button.danger{background:#f4dddd;color:#8c3038;border-color:#d9a6aa}
+body.light-mode button.active{background:#d8f2e6;color:#176b50;border-color:#79c9a5}
+body.light-mode .wire-panel,
+body.light-mode .settings,
+body.light-mode .reading,
+body.light-mode .status{background:#ffffff;border-color:#cbd5e2;color:#34445a}
+body.light-mode .wire-controls label,
+body.light-mode .setting-row label{color:#46566b}
+body.light-mode .wire-controls select,
+body.light-mode .wire-controls input[type=number],
+body.light-mode .setting-row input[type=number]{
+  background:#fff;color:#243247;border-color:#b9c7d8;
+}
+body.light-mode .wire-controls input[type=color]{background:#fff;border-color:#b9c7d8}
+body.light-mode .wire-help,
+body.light-mode .hint{color:#68778c}
+body.light-mode .reading small{color:#68778c}
+body.light-mode .reading strong{color:#9b7429}
+body.light-mode .meter-info{background:#f2f6fa;border-color:#cbd5e2;color:#34445a}
+body.light-mode .meter-info strong{color:#16865c}
+body.light-mode .meter-screen{background:#e5f5ed;color:#087447;border-color:#49aa7e;box-shadow:inset 0 0 7px #78998a55}
+body.light-mode .device.selected .device-name{color:#9b7429;font-weight:bold}
+body.light-mode .status.good{background:#e8f7ef;border-color:#8bc9a8;color:#176b50}
+body.light-mode .status.bad{background:#fff0f0;border-color:#dfa1a5;color:#9a343d}
+
 </style>
 </head>
 
@@ -180,7 +231,7 @@ button.active{background:#176b50;border-color:#55dba6}
   </div>
 
   <div class="status" id="status">أضف الأجهزة، ثم وصّل أطرافها لتكوين دائرة كهربائية.</div>
-  <p class="hint">الأميتر يوصل على التوالي، والفولتميتر على التوازي. هذه محاكاة تعليمية لدوائر DC وليست تعليمات لتوصيل أجهزة كهربائية حقيقية.</p>
+  <p class="hint">الأميتر والجلفانومتر لقياس التيار، والفولتميتر لقياس فرق الجهد، والأوميتر لقياس المقاومة. هذه محاكاة تعليمية لدوائر DC وليست تعليمات لتوصيل أجهزة كهربائية حقيقية.</p>
  </main>
 </div>
 
@@ -218,7 +269,14 @@ const definitions={
  voltmeter:{name:"فولتميتر"},
  capacitor:{name:"مكثف",value:100,unit:"µF"},
  inductor:{name:"ملف حث",value:10,unit:"mH"},
- fuse:{name:"مصهر",value:0.05,unit:"Ω"}
+ fuse:{name:"مصهر",value:0.05,unit:"Ω"},
+ galvanometer:{name:"جلفانومتر",value:100,unit:"Ω",fullScale:0.001},
+ voltMultiplier:{name:"مضاعف جهد",value:9000,unit:"Ω"},
+ ohmmeter:{name:"أوميتر"},
+ variableResistor:{name:"مقاومة متغيرة",value:100,unit:"Ω"},
+ photoresistor:{name:"مقاومة ضوئية",value:1000,unit:"Ω"},
+ thermistor:{name:"مقاومة حرارية",value:1000,unit:"Ω"},
+ colorResistor:{name:"مقاومة ذات أشرطة لونية",value:1000,unit:"Ω"}
 };
 
 function svg(content){
@@ -228,9 +286,13 @@ function svg(content){
 function getSymbol(d){
  const gold="#eac46e",white="#dce5f2";
 
- if(d.type==="resistor"||d.type==="rheostat"){
+ if(["resistor","rheostat","variableResistor","photoresistor","thermistor","colorResistor","voltMultiplier"].includes(d.type)){
   let shape=`<path d="M2 32 H14 L23 15 L35 49 L47 15 L59 49 L71 15 L83 49 L95 32 H108" stroke="${gold}" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
-  if(d.type==="rheostat")shape+=`<path d="M76 2 L54 24 M54 24 L56 14 M54 24 L65 22" stroke="#ff7777" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+  if(d.type==="rheostat"||d.type==="variableResistor")shape+=`<path d="M76 2 L54 24 M54 24 L56 14 M54 24 L65 22" stroke="#ff7777" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+  if(d.type==="photoresistor")shape+=`<path d="M18 3 L36 20 M29 1 L45 17" stroke="#70c9ff" stroke-width="2.5" fill="none"/>`;
+  if(d.type==="thermistor")shape+=`<path d="M54 3 L72 21 M63 12 L72 21 L61 21" stroke="#ff7777" stroke-width="2.5" fill="none"/>`;
+  if(d.type==="colorResistor")shape+=`<path d="M30 20 V44 M40 18 V46 M50 17 V47 M60 17 V47 M70 18 V46" stroke="#eac46e" stroke-width="3"/>`;
+  if(d.type==="voltMultiplier")shape+=`<text x="55" y="12" text-anchor="middle" fill="#70c9ff" font-size="9">Rm</text>`;
   return svg(shape);
  }
 
@@ -248,6 +310,11 @@ function getSymbol(d){
   return svg(`<circle cx="55" cy="28" r="20" fill="${glow}" stroke="${light}" stroke-width="3"/><path d="M45 28 L65 28 M55 18 V38 M47 48 V55 H63 V48" stroke="#eee" stroke-width="3" fill="none"/>`);
  }
 
+ if(d.type==="galvanometer"){
+  const angle=Math.max(-55,Math.min(55,(d.measuredI||0)/(d.fullScale||0.001)*55));
+  return svg(`<circle cx="55" cy="29" r="25" fill="#edf2fa" stroke="#34445b" stroke-width="3"/><path d="M35 38 Q55 12 75 38" fill="none" stroke="#152236" stroke-width="1.5"/><path d="M55 31 L55 12" stroke="#d94b4b" stroke-width="2.5" transform="rotate(${angle} 55 31)"/><circle cx="55" cy="31" r="3" fill="#152236"/><text x="55" y="59" text-anchor="middle" fill="#152236" font-size="9">G</text>`);
+ }
+ if(d.type==="ohmmeter")return svg(`<circle cx="55" cy="29" r="25" fill="#edf2fa" stroke="#34445b" stroke-width="3"/><text x="55" y="37" text-anchor="middle" fill="#152236" font-size="22" font-weight="bold">Ω</text>`);
  if(d.type==="ammeter"||d.type==="voltmeter"){
   const letter=d.type==="ammeter"?"A":"V";
   return svg(`<circle cx="55" cy="29" r="25" fill="#edf2fa" stroke="#34445b" stroke-width="3"/><text x="55" y="37" text-anchor="middle" fill="#152236" font-size="24" font-weight="bold">${letter}</text>`);
@@ -261,8 +328,9 @@ function getSymbol(d){
 
 function meterText(d){
  if(!d.hasReading)return "بانتظار التحليل";
- const value=d.type==="ammeter"?d.measuredI:d.measuredV;
- return `${format(Math.abs(value))} ${d.type==="ammeter"?"A":"V"}`;
+ if(d.type==="ohmmeter")return Number.isFinite(d.measuredR)?`${format(d.measuredR)} Ω`:"مفتوح";
+ const value=d.type==="voltmeter"?d.measuredV:d.measuredI;
+ return `${format(Math.abs(value))} ${d.type==="voltmeter"?"V":"A"}`;
 }
 
 function createTool(type){
@@ -325,7 +393,8 @@ function addDevice(type,x,y){
   x:x??Math.min(70+devices.length*24,lab.clientWidth-75),
   y:y??Math.min(110+devices.length*20,lab.clientHeight-75),
   value:definitions[type].value??0,
-  closed:false,lit:false,measuredI:0,measuredV:0,hasReading:false
+  fullScale:definitions[type].fullScale??0.001,
+  closed:false,lit:false,measuredI:0,measuredV:0,measuredR:NaN,hasReading:false
  };
  devices.push(d);
  renderDevice(d);
@@ -338,7 +407,8 @@ function renderDevice(d){
  document.getElementById("device-"+d.id)?.remove();
  const el=document.createElement("div");
  el.className="device";
- if(d.type==="ammeter"||d.type==="voltmeter")el.classList.add("is-meter");
+ if(["ammeter","voltmeter","galvanometer","ohmmeter"].includes(d.type))el.classList.add("is-meter");
+ if(d.type==="ohmmeter")el.classList.add("is-ohmmeter");
  el.id="device-"+d.id;
  el.style.left=d.x+"px";
  el.style.top=d.y+"px";
@@ -614,15 +684,15 @@ function showSettings(d){
    selectDevice(d.id);
    analyze();
   };
- }else if(d.type==="ammeter"||d.type==="voltmeter"){
-  const isA=d.type==="ammeter";
-  const unit=isA?"A":"V";
+ }else if(["ammeter","voltmeter","galvanometer","ohmmeter"].includes(d.type)){
+  const isOhm=d.type==="ohmmeter",isVolt=d.type==="voltmeter",isGal=d.type==="galvanometer";
+  const unit=isVolt?"V":"A";
   settingsBody.innerHTML=`
    <div class="meter-info">
-    <div>قراءة ${isA?"شدة التيار":"فرق الجهد"}:</div>
-    <strong>${d.hasReading?format(Math.abs(isA?d.measuredI:d.measuredV))+" "+unit:"بانتظار تشغيل التحليل"}</strong>
+    <div>قراءة ${isOhm?"المقاومة":isVolt?"فرق الجهد":"شدة التيار"}:</div>
+    <strong>${d.hasReading?(isOhm?(Number.isFinite(d.measuredR)?format(d.measuredR)+" Ω":"مفتوح"):format(Math.abs(isVolt?d.measuredV:d.measuredI))+" "+unit):"بانتظار تشغيل التحليل"}</strong>
    </div>
-   <p class="hint">${isA?"يوصل الأميتر على التوالي لقياس شدة التيار.":"يوصل الفولتميتر على التوازي لقياس فرق الجهد."}</p>`;
+   <p class="hint">${isOhm?"يقيس المقاومة المكافئة بين طرفيه داخل المحاكاة.":isVolt?"يوصل الفولتميتر على التوازي لقياس فرق الجهد.":isGal?"الجلفانومتر يكشف التيارات الصغيرة، ويتحرك مؤشره حسب شدة التيار واتجاهه.":"يوصل الأميتر على التوالي لقياس شدة التيار."}</p>`;
  }else if(d.value!==undefined){
   const unit=definitions[d.type].unit||"";
   settingsBody.innerHTML=`
@@ -688,11 +758,13 @@ function setStatus(message,type=""){
 
 function resistance(d){
  switch(d.type){
-  case "resistor":case "rheostat":case "lamp":
+  case "resistor":case "rheostat":case "lamp":case "voltMultiplier":case "variableResistor":case "photoresistor":case "thermistor":case "colorResistor":
    return Math.max(0.000001,Number(d.value)||0);
   case "switch":return d.closed?0.02:1e12;
   case "ammeter":return 0.01;
+  case "galvanometer":return 100;
   case "voltmeter":return 1e9;
+  case "ohmmeter":return 1e12;
   case "capacitor":return 1e12;
   case "inductor":return 1e-6;
   case "fuse":return 0.05;
@@ -700,11 +772,37 @@ function resistance(d){
  }
 }
 
+function equivalentResistanceBetween(deviceId){
+ const meter=devices.find(d=>d.id===deviceId); if(!meter)return NaN;
+ const terms=[]; devices.forEach(d=>{if(d.type!=="ohmmeter")terms.push(d.id+":a",d.id+":b")});
+ terms.push(meter.id+":a",meter.id+":b");
+ const parent={};terms.forEach(t=>parent[t]=t);
+ function find(x){if(parent[x]!==x)parent[x]=find(parent[x]);return parent[x]}
+ function union(a,b){a=find(a);b=find(b);if(a!==b)parent[b]=a}
+ wires.forEach(w=>union(w.a.id+":"+w.a.side,w.b.id+":"+w.b.side));
+ devices.filter(d=>d.type==="battery").forEach(d=>union(d.id+":a",d.id+":b"));
+ const a=find(meter.id+":a"),b=find(meter.id+":b"); if(a===b)return 0;
+ const edges=[];
+ devices.forEach(d=>{
+  if(d.id===meter.id||["battery","ohmmeter","voltmeter","ammeter","galvanometer","capacitor","inductor"].includes(d.type))return;
+  const x=find(d.id+":a"),y=find(d.id+":b"); if(x!==y)edges.push({x,y,r:resistance(d)});
+ });
+ const nodes=[...new Set(edges.flatMap(e=>[e.x,e.y]).concat([a,b]))];
+ const seen=new Set([a]),stack=[a];
+ while(stack.length){const n=stack.pop();edges.forEach(e=>{const m=e.x===n?e.y:e.y===n?e.x:null;if(m&&!seen.has(m)){seen.add(m);stack.push(m)}})}
+ if(!seen.has(b))return Infinity;
+ const unknown=nodes.filter(n=>n!==b),idx={};unknown.forEach((n,i)=>idx[n]=i);
+ const A=Array.from({length:unknown.length},()=>Array(unknown.length).fill(0)),B=Array(unknown.length).fill(0);
+ edges.forEach(e=>{const g=1/Math.max(1e-9,e.r),i=idx[e.x],j=idx[e.y];if(i!==undefined)A[i][i]+=g;if(j!==undefined)A[j][j]+=g;if(i!==undefined&&j!==undefined){A[i][j]-=g;A[j][i]-=g}});
+ if(idx[a]===undefined)return 0; B[idx[a]]=1;
+ try{return Math.max(0,gaussian(A,B)[idx[a]])}catch(e){return Infinity}
+}
+
 function analyze(){
  if(!running){
   devices.forEach(d=>{
    if(d.type==="lamp")d.lit=false;
-   if(d.type==="ammeter"||d.type==="voltmeter")d.hasReading=false;
+   if(["ammeter","voltmeter","galvanometer","ohmmeter"].includes(d.type))d.hasReading=false;
    refreshSymbol(d);
   });
   return;
@@ -786,7 +884,7 @@ function analyze(){
     const current=d.type==="battery"?solution[sourceVariable[d.id]]:voltage/resistance(d);
     d.measuredV=voltage;d.measuredI=current;d.hasReading=true;
     if(d.type==="lamp")d.lit=Math.abs(current)>0.001;
-    if(["resistor","rheostat","lamp","fuse"].includes(d.type))totalPower+=voltage*current;
+    if(["resistor","rheostat","lamp","fuse","voltMultiplier","variableResistor","photoresistor","thermistor","colorResistor"].includes(d.type))totalPower+=voltage*current;
     if(d.type==="battery"){
      sourceCount++;
      if(sourceCount===1)totalVoltage=Math.abs(Number(d.value)||0);
@@ -800,6 +898,7 @@ function analyze(){
   return;
  }
 
+ devices.filter(d=>d.type==="ohmmeter").forEach(d=>{d.measuredR=equivalentResistanceBetween(d.id);d.hasReading=true});
  devices.forEach(refreshSymbol);
  const current=firstSourceCurrent??0;
  document.getElementById("current").textContent=format(current)+" A";
@@ -807,7 +906,7 @@ function analyze(){
  document.getElementById("resistance").textContent=sourceCount===1&&current>1e-10?format(totalVoltage/current)+" Ω":"— Ω";
  document.getElementById("power").textContent=format(Math.max(0,totalPower))+" W";
 
- if(selected&&(selected.type==="ammeter"||selected.type==="voltmeter"))showSettings(selected);
+ if(selected&&["ammeter","voltmeter","galvanometer","ohmmeter"].includes(selected.type))showSettings(selected);
  if(sourceCount===0)setStatus("لا توجد بطارية في الدائرة. أضف مصدر جهد لتشغيل التحليل.");
  else setStatus("تم تحليل الدائرة. تم تحديث قراءات الأجهزة المتصلة.","good");
 }
@@ -947,5 +1046,26 @@ window.addEventListener("resize",()=>{
  drawWires();
 });
 </script>
+
+<!-- استخدام نفس إعداد الوضع المحفوظ في الموقع -->
+<script src="theme.js"></script>
+<script>
+(function syncLabTheme(){
+  function applySavedTheme(){
+    try{
+      const savedTheme = localStorage.getItem("theme");
+      document.body.classList.toggle("light-mode", savedTheme === "light");
+    }catch(error){
+      /* يظل المعمل على الوضع الداكن إذا تعذر الوصول إلى التخزين */
+    }
+  }
+  applySavedTheme();
+  window.addEventListener("storage", function(event){
+    if(event.key === "theme") applySavedTheme();
+  });
+  window.addEventListener("pageshow", applySavedTheme);
+})();
+</script>
+
 </body>
 </html>
